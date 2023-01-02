@@ -1,0 +1,20 @@
+[package]
+name = "qr-rs-lib"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+fast_qr = { version = "0.7.0", features = ["image"] }
+image = "0.24.5"
+png = "0.17.7"
+once_cell = "1.7.2"
+
+[dev-dependencies]
+criterion = { version = "0.4.0", features = [ "html_reports" ]}
+rand = "0.8.5"
+
+[[bench]]
+name = "my_benchmark"
+harness = false

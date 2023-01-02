@@ -1,4 +1,5 @@
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
+use qr_rs_lib::generate_qr_code;
 use serde::Deserialize;
 
 static PORT: u16 = 8080;
@@ -36,7 +37,7 @@ async fn help() -> impl Responder {
 async fn qr(link: web::Query<Input>) -> impl Responder {
   let input = link.into_inner();
 
-  match qr_rs::generate_qr_code(input.link.as_str()) {
+  match generate_qr_code(input.link.as_str()) {
     Ok(body) => HttpResponse::Ok().body(body),
     Err(e) => HttpResponse::BadRequest().body(e.to_string()),
   }

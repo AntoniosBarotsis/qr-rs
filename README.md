@@ -3,7 +3,7 @@
 A simple server that generates QR Codes and overlays a logo on top of them.
 
 <p align="center">
-  <img src="assets/example.png" alt="Example" width="200">
+  <img src="lib/assets/example.png" alt="Example" width="200">
 </p>
 
 ## Usage
@@ -62,5 +62,5 @@ create 100 strings of 150 characters and test how quick the QR Code generation i
 23ms on my machine which is pretty good for my use case.
 
 <p align="center">
-  <img src="assets/plot.svg" alt="Benchmark" width="600">
+  <img src="lib/assets/plot.svg" alt="Benchmark" width="600">
 </p>
