@@ -10,8 +10,39 @@ use once_cell::sync::OnceCell;
 
 const LOGO: &[u8] = include_bytes!("../assets/logo.png");
 static LOGO_IMAGE: OnceCell<DynamicImage> = OnceCell::new();
+/// The default QR Code size.
+pub const DEFAULT_SIZE: u32 = 600;
 
-pub fn generate_qr_code(link: &str) -> Result<Vec<u8>, Error> {
+#[derive(Debug)]
+pub struct QrCodeBuilder<'a> {
+  link: &'a str,
+  size: Option<u32>,
+}
+
+impl<'a> QrCodeBuilder<'a> {
+  pub fn new(link: &'a str) -> QrCodeBuilder<'a> {
+    Self {
+      link,
+      size: None,
+    }
+  }
+
+  pub fn with_size(self, size: u32) -> Self {
+    Self {
+      size: Some(size),
+      ..self
+    }
+  }
+
+  pub fn build(self) -> Result<Vec<u8>, Error> {
+    let link = self.link;
+    let size = self.size.unwrap_or(DEFAULT_SIZE);
+    generate_qr_code(link, size)
+  }
+}
+
+/// Generates a QR Code in the form of a `Vec<u8>`.
+fn generate_qr_code(link: &str, size: u32) -> Result<Vec<u8>, Error> {
   // Generate QR Code
   let mut qrcode = fast_qr::QRBuilder::new(link.to_owned());
 
@@ -34,7 +65,7 @@ pub fn generate_qr_code(link: &str) -> Result<Vec<u8>, Error> {
   // Convert to image
   let img = ImageBuilder::default()
     .shape(Shape::Square)
-    .fit_width(600)
+    .fit_width(size)
     .to_pixmap(&qrcode)
     .encode_png()?;
 
