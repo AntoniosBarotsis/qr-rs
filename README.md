@@ -33,6 +33,10 @@ If you are not used to Rust's build times, the first one usually takes some time
 
 The logo is currently stored in `assets/logo.png`.
 
+## Roadmap
+
+A rough `v1.0` roadmap can be found [here](https://github.com/AntoniosBarotsis/qr-rs/issues/3).
+
 ## Testing
 
 I made a few attempts at testing but none of them really resulted in what I wanted to so I ended up
