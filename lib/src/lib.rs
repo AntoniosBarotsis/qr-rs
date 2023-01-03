@@ -4,8 +4,8 @@ use std::io::Cursor;
 
 use error::Error;
 use fast_qr::convert::{image::ImageBuilder, Builder, Shape};
-use image::{imageops, ImageBuffer, ImageFormat};
 pub use image::Rgba;
+use image::{imageops, ImageBuffer, ImageFormat};
 use image::{io::Reader as ImageReader, DynamicImage};
 use once_cell::sync::OnceCell;
 
@@ -25,7 +25,7 @@ pub struct QrCodeBuilder<'a> {
 }
 
 impl<'a> QrCodeBuilder<'a> {
-  pub fn new(link: &'a str) -> QrCodeBuilder<'a> {
+  pub const fn new(link: &'a str) -> QrCodeBuilder<'a> {
     Self {
       link,
       size: None,
@@ -53,7 +53,18 @@ impl<'a> QrCodeBuilder<'a> {
 }
 
 /// Generates a QR Code in the form of a `Vec<u8>`.
-fn generate_qr_code(link: &str, size: u32, bg_color: Option<Rgba<u8>>) -> Result<Vec<u8>, Error> {
+pub fn generate_qr_code(
+  link: &str,
+  size: u32,
+  bg_color: Option<Rgba<u8>>,
+) -> Result<Vec<u8>, Error> {
+  // TODO Arbitrary (but sensible) values for now, maybe we need smaller/bigger?
+  if !(200..=1000).contains(&size) {
+    return Err(Error::InputError(
+      "Size should be between 200 and 1000.".to_string(),
+    ));
+  }
+
   // Generate QR Code
   let mut qrcode = fast_qr::QRBuilder::new(link.to_owned());
 
@@ -64,7 +75,7 @@ fn generate_qr_code(link: &str, size: u32, bg_color: Option<Rgba<u8>>) -> Result
     1..=35 => qrcode.ecl(fast_qr::ECL::H),
     36.. => qrcode.ecl(fast_qr::ECL::Q),
     _ => {
-      return Err(Error::SizeError(format!(
+      return Err(Error::InputError(format!(
         "Invalid link length {}",
         link.len()
       )))
@@ -98,17 +109,17 @@ fn generate_qr_code(link: &str, size: u32, bg_color: Option<Rgba<u8>>) -> Result
     tmp.enumerate_pixels_mut().for_each(|(_x, _y, p)| {
       // Remove greys
       if p.0 > BLACK {
-        *p = Rgba(WHITE)
+        *p = Rgba(WHITE);
       }
-  
+
       if let Some(new_bg) = bg_color {
         if p.0 == WHITE {
-          *p = new_bg
+          *p = new_bg;
         }
       }
     });
   }
-  
+
   // Overlay logo on top of QR code
   let center = img.width() / 2;
   let logo = logo.resize(center / 2, center / 2, imageops::FilterType::Nearest);

@@ -2,7 +2,7 @@ use image::ImageError;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Error {
-  SizeError(String),
+  InputError(String),
   QrError(String),
   ImageError(String),
 }
@@ -35,7 +35,7 @@ impl From<ImageError> for Error {
 impl ToString for Error {
   fn to_string(&self) -> String {
     match self {
-      Self::ImageError(e) | Self::QrError(e) | Self::SizeError(e) => e.clone(),
+      Self::ImageError(e) | Self::QrError(e) | Self::InputError(e) => e.clone(),
     }
   }
 }
