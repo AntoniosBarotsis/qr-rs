@@ -1,5 +1,5 @@
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
-use qr_rs_lib::{QrCodeBuilder, Rgba, DEFAULT_SIZE};
+use qr_rs_lib::{QrCodeBuilder, Rgb, DEFAULT_SIZE};
 use serde::Deserialize;
 
 static PORT: u16 = 8080;
@@ -21,7 +21,7 @@ struct Input {
   bg_color: Option<String>,
 }
 
-fn hex_to_rgba(hex: &str) -> Option<Rgba<u8>> {
+fn hex_to_rgb(hex: &str) -> Option<Rgb> {
   if hex.len() != 6 {
     return None;
   }
@@ -30,7 +30,7 @@ fn hex_to_rgba(hex: &str) -> Option<Rgba<u8>> {
   let y = u8::from_str_radix(&hex[2..4], 16).ok()?;
   let z = u8::from_str_radix(&hex[4..6], 16).ok()?;
 
-  Some(Rgba([x, y, z, 255]))
+  Some(Rgb([x, y, z]))
 }
 
 #[get("/")]
@@ -51,7 +51,7 @@ async fn help() -> impl Responder {
 async fn qr(link: web::Query<Input>) -> impl Responder {
   let input = link.into_inner();
 
-  let bg_color = input.bg_color.and_then(|s| hex_to_rgba(&s));
+  let bg_color = input.bg_color.and_then(|s| hex_to_rgb(&s));
 
   let builder = QrCodeBuilder::new(input.link.as_str())
     .with_size(input.size.unwrap_or(DEFAULT_SIZE))
