@@ -93,6 +93,7 @@ impl<'a> QrCodeBuilder<'a> {
 /// ## Examples
 ///
 /// ```
+/// # use qr_rs_lib::generate_qr_code;
 /// let link = "https://github.com/AntoniosBarotsis/qr-rs";
 /// let size = 600;
 /// let bg_color = qr_rs_lib::Rgb([255, 0, 0]);
