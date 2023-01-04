@@ -78,6 +78,7 @@ impl<'a> QrCodeBuilder<'a> {
 }
 
 /// Generates a QR Code in the form of a [`Result<Vec<u8>, Error>`].
+/// The [`Vec<u8>`] is generated according to [`image::ImageOutputFormat::Png`].
 ///
 /// ## Argument requirements
 ///
