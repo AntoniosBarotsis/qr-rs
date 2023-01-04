@@ -1,27 +1,52 @@
+//! This crate provides an easy way of generating QR Codes and overlays Google's logo in the center.
+//! It was developed for [GDSC Delft](https://gdsc.community.dev/delft-university-of-technology/).
+//!
+//! It uses [`fast-qr`](https://github.com/erwanvivien/fast_qr) which makes is
+//! [pretty fast](https://github.com/erwanvivien/fast_qr#benchmarks).
+//! This crate also provides its own benchmarks.
+
 pub mod error;
 
 use std::io::Cursor;
 
 use error::Error;
 use fast_qr::convert::{image::ImageBuilder, Builder, Shape};
-pub use image::Rgba;
+use image::Rgba;
 use image::{imageops, ImageBuffer, ImageFormat};
 use image::{io::Reader as ImageReader, DynamicImage};
 use once_cell::sync::OnceCell;
 
 const LOGO: &[u8] = include_bytes!("../assets/logo.png");
 static LOGO_IMAGE: OnceCell<DynamicImage> = OnceCell::new();
+
 /// The default QR Code size.
 pub const DEFAULT_SIZE: u32 = 600;
+/// Minimum QR Code size.
+pub const SIZE_MIN: u32 = 200;
+/// Maximum QR Code size.
+pub const SIZE_MAX: u32 = 1000;
 
 const BLACK: [u8; 4] = [0, 0, 0, 255];
 const WHITE: [u8; 4] = [255, 255, 255, 255];
 
+/// Wrapper around [Rgba] but without the `a` value.
+#[derive(Debug, Clone, Copy)]
+pub struct Rgb(pub [u8; 3]);
+
+impl From<Rgb> for Rgba<u8> {
+  fn from(val: Rgb) -> Self {
+    let tmp = val.0;
+    let rgba = [tmp[0], tmp[1], tmp[2], 255];
+    Self(rgba)
+  }
+}
+
+/// Builder that eventually calls [`generate_qr_code`].
 #[derive(Debug)]
 pub struct QrCodeBuilder<'a> {
   link: &'a str,
   size: Option<u32>,
-  bg_color: Option<Rgba<u8>>,
+  bg_color: Option<Rgb>,
 }
 
 impl<'a> QrCodeBuilder<'a> {
@@ -38,7 +63,7 @@ impl<'a> QrCodeBuilder<'a> {
     self
   }
 
-  pub fn with_bg_color(&mut self, bg_color: Option<Rgba<u8>>) -> &mut Self {
+  pub fn with_bg_color(&mut self, bg_color: Option<Rgb>) -> &mut Self {
     self.bg_color = bg_color;
     self
   }
@@ -52,18 +77,37 @@ impl<'a> QrCodeBuilder<'a> {
   }
 }
 
-/// Generates a QR Code in the form of a `Vec<u8>`.
-pub fn generate_qr_code(
-  link: &str,
-  size: u32,
-  bg_color: Option<Rgba<u8>>,
-) -> Result<Vec<u8>, Error> {
+/// Generates a QR Code in the form of a [`Result<Vec<u8>, Error>`].
+///
+/// ## Argument requirements
+///
+/// - The `link` should not be empty
+/// - The `size` should be between [`SIZE_MIN`] and [`SIZE_MAX`] (their values might change in
+/// future releases).
+///
+/// ## Defaults
+///
+/// - `bg_color color` defaults to white.
+/// - `size` defaults to [`DEFAULT_SIZE`].
+///
+/// ## Examples
+///
+/// ```
+/// let link = "https://github.com/AntoniosBarotsis/qr-rs";
+/// let size = 600;
+/// let bg_color = qr_rs_lib::Rgb([255, 0, 0]);
+/// let res = generate_qr_code(link, size, Some(bg_color));
+/// assert!(matches!(res, Ok(_)));
+/// ```
+pub fn generate_qr_code(link: &str, size: u32, bg_color: Option<Rgb>) -> Result<Vec<u8>, Error> {
   // TODO Arbitrary (but sensible) values for now, maybe we need smaller/bigger?
   if !(200..=1000).contains(&size) {
     return Err(Error::InputError(
       "Size should be between 200 and 1000.".to_string(),
     ));
   }
+
+  let bg_color = bg_color.map(std::convert::Into::into);
 
   // Generate QR Code
   let mut qrcode = fast_qr::QRBuilder::new(link.to_owned());
