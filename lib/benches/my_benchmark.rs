@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use qr_rs_lib::{generate_qr_code, DEFAULT_SIZE};
+use qr_rs_lib::QrCodeBuilder;
 use rand::{distributions::Alphanumeric, Rng};
 
 pub fn criterion_benchmark(c: &mut Criterion) {
@@ -7,13 +7,12 @@ pub fn criterion_benchmark(c: &mut Criterion) {
 
   let _r = c.bench_function("Generate QR Code", |b| {
     b.iter(|| {
-      generate_qr_code(
-        &s.get(rand::thread_rng().gen_range(0..100))
-          .expect("Index in range")
-          .clone(),
-        DEFAULT_SIZE,
-        None,
-      )
+      let link = &s
+        .get(rand::thread_rng().gen_range(0..100))
+        .expect("Index in range")
+        .clone();
+
+      let _qr_code = QrCodeBuilder::new(link).build().expect("Should not crash.");
     });
   });
 }
