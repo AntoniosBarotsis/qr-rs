@@ -4,6 +4,8 @@
 //! It uses [`fast-qr`](https://github.com/erwanvivien/fast_qr) which makes is
 //! [pretty fast](https://github.com/erwanvivien/fast_qr#benchmarks).
 //! This crate also provides its own benchmarks.
+//!
+//! This crate exposes the [`QrCodeBuilder`] struct which generates the QR Codes.
 
 pub mod error;
 
@@ -41,7 +43,37 @@ impl From<Rgb> for Rgba<u8> {
   }
 }
 
-/// Builder that eventually calls [`generate_qr_code`].
+/// Builder for generating QR Codes.
+///
+///
+/// Generates a QR Code in the form of a [`Result<Vec<u8>, Error>`].
+/// The [`Vec<u8>`] is generated according to [`image::ImageOutputFormat::Png`].
+///
+/// ## Argument requirements
+///
+/// - The `link` should not be empty.
+/// - The `size` should be between [`SIZE_MIN`] and [`SIZE_MAX`] (their values might change in
+/// future releases).
+///
+/// Note that these are only checked in [`QrCodeBuilder::build`].
+///
+/// ## Defaults
+///
+/// - `bg_color color` defaults to white.
+/// - `size` defaults to [`DEFAULT_SIZE`].
+///
+/// ## Examples
+///
+/// ```
+/// use qr_rs_lib::{QrCodeBuilder, Rgb};
+///
+/// let qr_code = QrCodeBuilder::new("github.com")
+///   .with_size(600)
+///   .with_bg_color(Rgb([255, 0, 0]))
+///   .build();
+///
+/// assert!(matches!(qr_code, Ok(_)));
+/// ```
 #[derive(Debug)]
 pub struct QrCodeBuilder<'a> {
   link: &'a str,
@@ -58,13 +90,17 @@ impl<'a> QrCodeBuilder<'a> {
     }
   }
 
+  /// The QR Codes are always square so `size` is used for both the
+  /// height and width.
   pub fn with_size(&mut self, size: u32) -> &mut Self {
     self.size = Some(size);
     self
   }
 
-  pub fn with_bg_color(&mut self, bg_color: Option<Rgb>) -> &mut Self {
-    self.bg_color = bg_color;
+  /// Sets the background color of the QR Code. The caller is responsible
+  /// for ensuring that the end result is readable.
+  pub fn with_bg_color(&mut self, bg_color: Rgb) -> &mut Self {
+    self.bg_color = Some(bg_color);
     self
   }
 
@@ -77,36 +113,11 @@ impl<'a> QrCodeBuilder<'a> {
   }
 }
 
-/// Generates a QR Code in the form of a [`Result<Vec<u8>, Error>`].
-/// The [`Vec<u8>`] is generated according to [`image::ImageOutputFormat::Png`].
-///
-/// ## Argument requirements
-///
-/// - The `link` should not be empty
-/// - The `size` should be between [`SIZE_MIN`] and [`SIZE_MAX`] (their values might change in
-/// future releases).
-///
-/// ## Defaults
-///
-/// - `bg_color color` defaults to white.
-/// - `size` defaults to [`DEFAULT_SIZE`].
-///
-/// ## Examples
-///
-/// ```
-/// # use qr_rs_lib::generate_qr_code;
-/// let link = "https://github.com/AntoniosBarotsis/qr-rs";
-/// let size = 600;
-/// let bg_color = qr_rs_lib::Rgb([255, 0, 0]);
-/// let res = generate_qr_code(link, size, Some(bg_color));
-/// assert!(matches!(res, Ok(_)));
-/// ```
-pub fn generate_qr_code(link: &str, size: u32, bg_color: Option<Rgb>) -> Result<Vec<u8>, Error> {
-  // TODO Arbitrary (but sensible) values for now, maybe we need smaller/bigger?
-  if !(200..=1000).contains(&size) {
-    return Err(Error::InputError(
-      "Size should be between 200 and 1000.".to_string(),
-    ));
+fn generate_qr_code(link: &str, size: u32, bg_color: Option<Rgb>) -> Result<Vec<u8>, Error> {
+  if !(SIZE_MIN..=SIZE_MAX).contains(&size) {
+    return Err(Error::InputError(format!(
+      "Size should be between {SIZE_MIN} and {SIZE_MAX}."
+    )));
   }
 
   let bg_color = bg_color.map(std::convert::Into::into);
@@ -197,10 +208,11 @@ fn generate_circular_padding(center: u32) -> ImageBuffer<Rgba<u8>, Vec<u8>> {
   image::ImageBuffer::from_fn(center * 2, center * 2, |x, y| {
     let distance =
       f64::from((casted_center - x as i32).pow(2) + (casted_center - y as i32).pow(2)).sqrt();
+
     let transparent: [u8; 4] = [255, 255, 255, 0];
 
     // The 3.5 is just a "magic number ✨" that makes the white circle
-    // just big enough for me.
+    // just big enough for my taste.
     if distance < (f64::from(center) / 3.5) {
       Rgba(WHITE)
     } else {
