@@ -1,4 +1,4 @@
-name: Build & Tests
+name: Build - Server
 
 on:
   push:
@@ -37,10 +37,6 @@ jobs:
       - name: Build
         run: cargo build --verbose
 
-      - name: Test
-        working-directory: ./lib
-        run: cargo test --verbose
-
   docker_build_x86:
     name: Docker build
     runs-on: ubuntu-22.04
@@ -60,17 +56,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install clippy
-        run: rustup component add clippy
-
       - name: Use cached dependencies
         uses: Swatinem/rust-cache@v2
         with:
           key: "ubuntu-22.04-x86_64-unknown-linux-gnu"
 
-      - name: Run clippy
-        run: cargo clippy -- -Dwarnings
+      - name: Install clippy
+        run: rustup component add clippy
 
-      - name: Run clippy (Lib)
-        working-directory: ./lib
+      - name: Run clippy
         run: cargo clippy -- -Dwarnings

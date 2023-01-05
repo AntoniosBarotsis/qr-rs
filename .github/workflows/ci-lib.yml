@@ -1,0 +1,63 @@
+name: Build & Tests (lib)
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_test_run:
+    name: Build and test on ${{ matrix.job.os }} (${{ matrix.job.target }})
+    runs-on: ${{ matrix.job.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - { target: aarch64-unknown-linux-gnu , os: ubuntu-22.04 }
+          - { target: x86_64-unknown-linux-gnu  , os: ubuntu-22.04 }
+          - { target: x86_64-apple-darwin       , os: macos-12     }
+          - { target: x86_64-pc-windows-msvc    , os: windows-2022 }
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.job.target }}
+
+      - name: Use cached dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: "${{ matrix.job.os }}-${{ matrix.job.target }}"
+
+      - name: Build
+        working-directory: ./lib
+        run: cargo build --verbose
+
+      - name: Test
+        working-directory: ./lib
+        run: cargo test --verbose
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use cached dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: "ubuntu-22.04-x86_64-unknown-linux-gnu"
+
+      - name: Install clippy
+        run: rustup component add clippy
+
+      - name: Run clippy
+        working-directory: ./lib
+        run: cargo clippy -- -Dwarnings
