@@ -1,6 +1,10 @@
+mod error;
+
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use qr_rs_lib::{QrCodeBuilder, Rgb, DEFAULT_SIZE};
 use serde::Deserialize;
+
+use crate::error::Error;
 
 static PORT: u16 = 8080;
 
@@ -48,10 +52,13 @@ async fn help() -> impl Responder {
 
 #[get("qr")]
 #[allow(clippy::unused_async)]
-async fn qr(link: web::Query<Input>) -> impl Responder {
+async fn qr(link: web::Query<Input>) -> Result<HttpResponse, Error> {
   let input = link.into_inner();
 
-  let bg_color = input.bg_color.and_then(|s| hex_to_rgb(&s));
+  let bg_color = input
+    .bg_color
+    .and_then(|s| hex_to_rgb(&s))
+    .ok_or(Error::InvalidColor)?;
 
   let builder = QrCodeBuilder::new(input.link.as_str())
     .with_size(input.size.unwrap_or(DEFAULT_SIZE))
@@ -59,7 +66,7 @@ async fn qr(link: web::Query<Input>) -> impl Responder {
     .build();
 
   match builder {
-    Ok(body) => HttpResponse::Ok().content_type("image/png").body(body),
-    Err(e) => HttpResponse::BadRequest().body(e.to_string()),
+    Ok(body) => Ok(HttpResponse::Ok().content_type("image/png").body(body)),
+    Err(e) => Err(Error::Generic(e.to_string())),
   }
 }
