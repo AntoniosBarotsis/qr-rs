@@ -55,9 +55,15 @@ jobs:
         with:
           key: "ubuntu-22.04-x86_64-unknown-linux-gnu"
 
-      - name: Install clippy
-        run: rustup component add clippy
+      - name: Install clippy and rustfmt
+        run: |
+          rustup component add clippy
+          rustup component add rustfmt
 
       - name: Run clippy
         working-directory: ./lib
         run: cargo clippy -- -Dwarnings
+
+      - name: Run fmt
+        working-directory: ./lib
+        run: cargo fmt --check
