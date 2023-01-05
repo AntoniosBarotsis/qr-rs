@@ -1,9 +1,7 @@
 # QR-RS
 
-[![Build & Tests](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci.yml)
+[![Build - Server](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci-server.yml/badge.svg)](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci-server.yml)
 [![dependency status](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs/status.svg?path=.)](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs?path=.)
-<!-- [![Crates.io](https://img.shields.io/crates/v/qr-rs)](https://crates.io/crates/qr-rs) -->
-<!-- [![docs.rs](https://img.shields.io/docsrs/qr-rs)](https://docs.rs/qr-rs) -->
 <!-- [![Docker Image](https://img.shields.io/badge/Docker-Images-0092e6?logo=docker)](https://hub.docker.com/r/antoniosbarotsis/qr-rs) -->
 
 A simple server that generates QR Codes and overlays a logo on top of them.
