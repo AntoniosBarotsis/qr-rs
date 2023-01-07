@@ -5,4 +5,4 @@
 <!-- [![Crates.io](https://img.shields.io/crates/v/qr-rs)](https://crates.io/crates/qr-rs) -->
 <!-- [![docs.rs](https://img.shields.io/docsrs/qr-rs)](https://docs.rs/qr-rs) -->
 
-A thing wrapper around [`fast-qr`](https://github.com/erwanvivien/fast_qr).
+A thin wrapper around [`fast-qr`](https://github.com/erwanvivien/fast_qr).
