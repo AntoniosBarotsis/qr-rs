@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use image::ImageError;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -37,10 +39,10 @@ impl From<ImageError> for Error {
   }
 }
 
-impl ToString for Error {
-  fn to_string(&self) -> String {
-    match self {
-      Self::ImageError(e) | Self::QrError(e) | Self::InputError(e) => e.clone(),
+impl Display for Error {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    match &self {
+      Self::ImageError(e) | Self::QrError(e) | Self::InputError(e) => write!(f, "{}", e),
     }
   }
 }
