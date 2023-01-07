@@ -5,14 +5,14 @@ use actix_web::{http::StatusCode, HttpResponse, ResponseError};
 #[derive(Debug)]
 pub enum Error {
   InvalidColor,
-  Generic(String),
+  LibError(Box<qr_rs_lib::error::Error>),
 }
 
 impl fmt::Display for Error {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match &self {
       Self::InvalidColor => write!(f, "Invalid color"),
-      Self::Generic(e) => write!(f, "{e}"),
+      Self::LibError(e) => write!(f, "{}", *e),
     }
   }
 }
