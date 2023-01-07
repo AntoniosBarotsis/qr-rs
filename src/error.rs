@@ -8,6 +8,12 @@ pub enum Error {
   LibError(Box<qr_rs_lib::error::Error>),
 }
 
+impl From<qr_rs_lib::error::Error> for Error {
+  fn from(e: qr_rs_lib::error::Error) -> Self {
+    Self::LibError(Box::new(e))
+  }
+}
+
 impl fmt::Display for Error {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match &self {

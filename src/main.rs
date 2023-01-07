@@ -60,13 +60,10 @@ async fn qr(link: web::Query<Input>) -> Result<HttpResponse, Error> {
     .and_then(|s| hex_to_rgb(&s))
     .ok_or(Error::InvalidColor)?;
 
-  let builder = QrCodeBuilder::new(input.link.as_str())
+  let qr_code = QrCodeBuilder::new(input.link.as_str())
     .with_size(input.size.unwrap_or(DEFAULT_SIZE))
     .with_bg_color(bg_color)
-    .build();
+    .build()?;
 
-  match builder {
-    Ok(body) => Ok(HttpResponse::Ok().content_type("image/png").body(body)),
-    Err(e) => Err(Error::Generic(e.to_string())),
-  }
+  Ok(HttpResponse::Ok().content_type("image/png").body(qr_code))
 }
