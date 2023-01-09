@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
 
 #[derive(Debug, Deserialize)]
 struct Input {
-  link: String,
+  content: String,
   size: Option<u32>,
   bg_color: Option<String>,
 }
@@ -44,8 +44,8 @@ async fn help() -> impl Responder {
   let msg = concat!(
     "Endpoints:\n",
     " - /qr [GET]\n",
-    "   Query Params: link={string}, size={number}, bg_color={hex}\n",
-    "   Example: /qr?link=https://github.com/AntoniosBarotsis\n"
+    "   Query Params: content={string}, size={number}, bg_color={hex}\n",
+    "   Example: /qr?content=https://github.com/AntoniosBarotsis\n"
   );
 
   HttpResponse::Ok().body(msg)
@@ -53,8 +53,8 @@ async fn help() -> impl Responder {
 
 #[get("qr")]
 #[allow(clippy::unused_async)]
-async fn qr(link: web::Query<Input>) -> Result<HttpResponse, Error> {
-  let input = link.into_inner();
+async fn qr(content: web::Query<Input>) -> Result<HttpResponse, Error> {
+  let input = content.into_inner();
 
   let bg_color = input
     .bg_color
@@ -62,7 +62,7 @@ async fn qr(link: web::Query<Input>) -> Result<HttpResponse, Error> {
     .and_then(|s| hex_to_rgb(&s))
     .ok_or(Error::InvalidColor)?;
 
-  let qr_code = QrCodeBuilder::new(input.link.as_str())
+  let qr_code = QrCodeBuilder::new(input.content.as_str())
     .with_size(input.size.unwrap_or(DEFAULT_SIZE))
     .with_bg_color(bg_color)
     .build()?;

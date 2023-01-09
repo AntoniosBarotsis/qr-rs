@@ -51,7 +51,7 @@ impl From<Rgb> for Rgba<u8> {
 ///
 /// ## Argument requirements
 ///
-/// - The `link` should not be empty.
+/// - The `content` should not be empty.
 /// - The `size` should be between [`SIZE_MIN`] and [`SIZE_MAX`] (their values might change in
 /// future releases).
 ///
@@ -76,15 +76,15 @@ impl From<Rgb> for Rgba<u8> {
 /// ```
 #[derive(Debug)]
 pub struct QrCodeBuilder<'a> {
-  link: &'a str,
+  content: &'a str,
   size: Option<u32>,
   bg_color: Option<Rgb>,
 }
 
 impl<'a> QrCodeBuilder<'a> {
-  pub const fn new(link: &'a str) -> QrCodeBuilder<'a> {
+  pub const fn new(content: &'a str) -> QrCodeBuilder<'a> {
     Self {
-      link,
+      content,
       size: None,
       bg_color: None,
     }
@@ -105,15 +105,15 @@ impl<'a> QrCodeBuilder<'a> {
   }
 
   pub fn build(&self) -> Result<Vec<u8>, Error> {
-    let link = self.link;
+    let content = self.content;
     let size = self.size.unwrap_or(DEFAULT_SIZE);
     let bg_color = self.bg_color;
 
-    generate_qr_code(link, size, bg_color)
+    generate_qr_code(content, size, bg_color)
   }
 }
 
-fn generate_qr_code(link: &str, size: u32, bg_color: Option<Rgb>) -> Result<Vec<u8>, Error> {
+fn generate_qr_code(content: &str, size: u32, bg_color: Option<Rgb>) -> Result<Vec<u8>, Error> {
   if !(SIZE_MIN..=SIZE_MAX).contains(&size) {
     return Err(Error::InputError(format!(
       "Size should be between {SIZE_MIN} and {SIZE_MAX}."
@@ -123,18 +123,18 @@ fn generate_qr_code(link: &str, size: u32, bg_color: Option<Rgb>) -> Result<Vec<
   let bg_color = bg_color.map(std::convert::Into::into);
 
   // Generate QR Code
-  let mut qrcode = fast_qr::QRBuilder::new(link.to_owned());
+  let mut qrcode = fast_qr::QRBuilder::new(content.to_owned());
 
-  // Sometimes when the link was too short, the QR code would be invalid because of the logo.
+  // Sometimes when the content was too short, the QR code would be invalid because of the logo.
   // To circumvent this, the error correction level is set to high for URLs of length 0 to 35
   // and then reduced to Quartile which suffices.
-  let qrcode = match link.len() {
+  let qrcode = match content.len() {
     1..=35 => qrcode.ecl(fast_qr::ECL::H),
     36.. => qrcode.ecl(fast_qr::ECL::Q),
     _ => {
       return Err(Error::InputError(format!(
-        "Invalid link length {}",
-        link.len()
+        "Invalid content length {}",
+        content.len()
       )))
     }
   };
