@@ -104,6 +104,13 @@ impl<'a> QrCodeBuilder<'a> {
     self
   }
 
+  /// Similar to [`QrCodeBuilder::with_bg_color`] but takes an option instead
+  /// for convenience.
+  pub fn with_some_bg_color(&mut self, bg_color: Option<Rgb>) -> &mut Self {
+    self.bg_color = bg_color;
+    self
+  }
+
   pub fn build(&self) -> Result<Vec<u8>, Error> {
     let content = self.content;
     let size = self.size.unwrap_or(DEFAULT_SIZE);
