@@ -7,6 +7,7 @@ use serde::Deserialize;
 use crate::error::Error;
 
 static PORT: u16 = 8080;
+static WHITE_HEX: &str = "FFFFFF";
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -57,6 +58,7 @@ async fn qr(link: web::Query<Input>) -> Result<HttpResponse, Error> {
 
   let bg_color = input
     .bg_color
+    .or_else(|| Some(WHITE_HEX.to_owned()))
     .and_then(|s| hex_to_rgb(&s))
     .ok_or(Error::InvalidColor)?;
 
