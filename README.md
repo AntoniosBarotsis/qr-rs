@@ -14,11 +14,11 @@ A simple server that generates QR Codes and overlays a logo on top of them.
 
 ## Usage
 
-Start the server with `cargo run -r` then run the following to generate a QR Code that links to
+Start the server with `cargo run -r` then run the following to generate a QR Code that points to
 `google.com` and save it to `tmp.png`. 
 
 ```sh
-curl http://127.0.0.1:8080/qr?link=google.com --output tmp.png
+curl http://127.0.0.1:8080/qr?content=google.com --output tmp.png
 ./tmp.png
 ```
 
