@@ -1,71 +1,146 @@
+pub mod endpoints;
 mod error;
+use endpoints::{help, qr};
 
-use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
-use qr_rs_lib::{QrCodeBuilder, Rgb, DEFAULT_SIZE};
-use serde::Deserialize;
+use actix_web::{App, HttpServer};
 
-use crate::error::Error;
+use crate::endpoints::index;
 
 static PORT: u16 = 8080;
-static WHITE_HEX: &str = "FFFFFF";
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
   println!("Starting server on port {PORT}");
 
-  HttpServer::new(|| App::new().service(qr).service(help))
+  HttpServer::new(|| App::new().service(index).service(qr).service(help))
     .bind(("0.0.0.0", PORT))?
     .run()
     .await
 }
 
-#[derive(Debug, Deserialize)]
-struct Input {
-  content: String,
-  size: Option<u32>,
-  bg_color: Option<String>,
-}
+#[cfg(test)]
+#[allow(clippy::unwrap_used)]
+mod tests {
+  use actix_web::{body::MessageBody, http::StatusCode, test, App};
+  use pretty_assertions::assert_eq;
 
-fn hex_to_rgb(hex: &str) -> Option<Rgb> {
-  if hex.len() != 6 {
-    return None;
+  use crate::endpoints::{help, index, qr};
+
+  #[actix_web::test]
+  async fn test_get_index() {
+    let app = test::init_service(App::new().service(index)).await;
+    let req = test::TestRequest::get().uri("/").to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::PERMANENT_REDIRECT);
+
+    let location = resp.headers().get("Location");
+    assert!(location.is_some());
+
+    let tmp = location.unwrap().to_str();
+    assert!(tmp.is_ok());
+    assert_eq!(tmp.unwrap(), "/help");
   }
 
-  let x = u8::from_str_radix(&hex[0..2], 16).ok()?;
-  let y = u8::from_str_radix(&hex[2..4], 16).ok()?;
-  let z = u8::from_str_radix(&hex[4..6], 16).ok()?;
+  #[actix_web::test]
+  async fn test_get_help() {
+    let app = test::init_service(App::new().service(help)).await;
+    let req = test::TestRequest::get().uri("/help").to_request();
+    let resp = test::call_service(&app, req).await;
 
-  Some(Rgb([x, y, z]))
-}
+    assert_eq!(resp.status(), StatusCode::OK);
+  }
 
-#[get("/")]
-#[allow(clippy::unused_async)]
-async fn help() -> impl Responder {
-  let msg = concat!(
-    "Endpoints:\n",
-    " - /qr [GET]\n",
-    "   Query Params: content={string}, size={number}, bg_color={hex}\n",
-    "   Example: /qr?content=https://github.com/AntoniosBarotsis\n"
-  );
+  #[actix_web::test]
+  async fn test_get_qr_no_content() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get().uri("/qr").to_request();
+    let resp = test::call_service(&app, req).await;
 
-  HttpResponse::Ok().body(msg)
-}
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+  }
 
-#[get("qr")]
-#[allow(clippy::unused_async)]
-async fn qr(content: web::Query<Input>) -> Result<HttpResponse, Error> {
-  let input = content.into_inner();
+  #[actix_web::test]
+  async fn test_get_qr_with_content() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
 
-  let bg_color = input
-    .bg_color
-    .or_else(|| Some(WHITE_HEX.to_owned()))
-    .and_then(|s| hex_to_rgb(&s))
-    .ok_or(Error::InvalidColor)?;
+    assert_eq!(resp.status(), StatusCode::OK);
+  }
 
-  let qr_code = QrCodeBuilder::new(input.content.as_str())
-    .with_size(input.size.unwrap_or(DEFAULT_SIZE))
-    .with_bg_color(bg_color)
-    .build()?;
+  #[actix_web::test]
+  async fn test_get_qr_with_small_size() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&size=199")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
 
-  Ok(HttpResponse::Ok().content_type("image/png").body(qr_code))
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+
+    let body = resp.into_body().try_into_bytes();
+    assert!(body.is_ok());
+
+    let body = body.unwrap();
+    assert_eq!(body, "\"Size should be between 200 and 1000.\"");
+  }
+
+  #[actix_web::test]
+  async fn test_get_qr_with_big_size() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&size=1001")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+
+    let body = resp.into_body().try_into_bytes();
+    assert!(body.is_ok());
+
+    let body = body.unwrap();
+    assert_eq!(body, "\"Size should be between 200 and 1000.\"");
+  }
+
+  #[actix_web::test]
+  async fn test_get_qr_with_ok_size() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&size=600")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::OK);
+  }
+
+  #[actix_web::test]
+  async fn test_get_qr_with_invalid_color() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&bg_color=GGGGGG")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+
+    let body = resp.into_body().try_into_bytes();
+    assert!(body.is_ok());
+
+    let body = body.unwrap();
+    assert_eq!(body, "\"Invalid color\"");
+  }
+
+  #[actix_web::test]
+  async fn test_get_qr_with_size_color() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&bg_color=FFFFFF")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::OK);
+  }
 }

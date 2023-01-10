@@ -37,6 +37,9 @@ jobs:
       - name: Build
         run: cargo build --verbose
 
+      - name: Test
+        run: cargo test --verbose
+
   docker_build_x86:
     name: Docker build
     runs-on: ubuntu-22.04
