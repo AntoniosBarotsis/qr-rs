@@ -1,3 +1,4 @@
+use pretty_assertions::assert_eq;
 use qr_rs_lib::{error::Error, QrCodeBuilder};
 
 #[test]
@@ -12,7 +13,7 @@ fn empty_link() {
 #[test]
 fn size_too_small() {
   let res = QrCodeBuilder::new("link")
-    .with_size(190)
+    .with_size(199)
     .build()
     .expect_err("Small size should fail.");
 
@@ -22,7 +23,7 @@ fn size_too_small() {
 #[test]
 fn size_too_big() {
   let res = QrCodeBuilder::new("link")
-    .with_size(2000)
+    .with_size(1001)
     .build()
     .expect_err("Big size should fail.");
 
