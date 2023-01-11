@@ -2,6 +2,8 @@ use criterion::{criterion_group, criterion_main, Criterion};
 use qr_rs_lib::QrCodeBuilder;
 use rand::{distributions::Alphanumeric, Rng};
 
+const LOGO: &[u8] = include_bytes!("../../assets/logo.png");
+
 pub fn criterion_benchmark(c: &mut Criterion) {
   let s = generate_random_input();
 
@@ -12,7 +14,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         .expect("Index in range")
         .clone();
 
-      let _qr_code = QrCodeBuilder::new(link).build().expect("Should not crash.");
+      let _qr_code = QrCodeBuilder::new(link, LOGO).build().expect("Should not crash.");
     });
   });
 }
