@@ -14,7 +14,9 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         .expect("Index in range")
         .clone();
 
-      let _qr_code = QrCodeBuilder::new(link, LOGO).build().expect("Should not crash.");
+      let _qr_code = QrCodeBuilder::new(link, LOGO)
+        .build()
+        .expect("Should not crash.");
     });
   });
 }
