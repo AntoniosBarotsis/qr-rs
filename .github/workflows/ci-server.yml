@@ -35,10 +35,10 @@ jobs:
           key: "${{ matrix.job.os }}-${{ matrix.job.target }}"
 
       - name: Build
-        run: cargo build --verbose
+        run: cargo build --all-targets
 
       - name: Test
-        run: cargo test --verbose
+        run: cargo test
 
   docker_build_x86:
     name: Docker build

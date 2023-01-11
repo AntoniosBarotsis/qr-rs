@@ -36,11 +36,11 @@ jobs:
 
       - name: Build
         working-directory: ./lib
-        run: cargo build --verbose
+        run: cargo build --all-targets
 
       - name: Test
         working-directory: ./lib
-        run: cargo test --verbose
+        run: cargo test
 
   lint:
     name: Lint
