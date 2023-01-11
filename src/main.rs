@@ -1,5 +1,6 @@
 pub mod endpoints;
 mod error;
+mod logos;
 use endpoints::{help, qr};
 
 use actix_web::{App, HttpServer};

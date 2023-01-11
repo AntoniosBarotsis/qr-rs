@@ -2,7 +2,7 @@ use actix_web::{get, web, HttpResponse, Responder};
 use qr_rs_lib::{QrCodeBuilder, Rgb, DEFAULT_SIZE};
 use serde::Deserialize;
 
-use crate::error::Error;
+use crate::{error::Error, logos::Logo};
 
 static WHITE_HEX: &str = "FFFFFF";
 
@@ -38,7 +38,9 @@ pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, Error> {
     .and_then(|s| hex_to_rgb(&s))
     .ok_or(Error::InvalidColor)?;
 
-  let qr_code = QrCodeBuilder::new(input.content.as_str())
+  let logo = Logo::try_from(input.logo)?.into();
+
+  let qr_code = QrCodeBuilder::new(input.content.as_str(), logo)
     .with_size(input.size.unwrap_or(DEFAULT_SIZE))
     .with_bg_color(bg_color)
     .build()?;
@@ -51,6 +53,7 @@ pub struct Input {
   content: String,
   size: Option<u32>,
   bg_color: Option<String>,
+  logo: Option<String>,
 }
 
 fn hex_to_rgb(hex: &str) -> Option<Rgb> {

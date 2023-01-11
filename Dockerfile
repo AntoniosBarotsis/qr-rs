@@ -5,6 +5,7 @@ RUN apk add --no-cache musl-dev
 WORKDIR /qr-rs
 ADD ./src ./src
 ADD ./lib ./lib
+ADD ./assets ./assets
 COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
 RUN cargo build --release

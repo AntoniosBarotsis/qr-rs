@@ -1,4 +1,4 @@
-//! This crate provides an easy way of generating QR Codes and overlays Google's logo in the center.
+//! This crate provides an easy way of generating QR Codes with a logo overlay in the center.
 //! It was developed for [GDSC Delft](https://gdsc.community.dev/delft-university-of-technology/).
 //!
 //! It uses [`fast-qr`](https://github.com/erwanvivien/fast_qr) which makes is
@@ -6,6 +6,9 @@
 //! This crate also provides its own benchmarks.
 //!
 //! This crate exposes the [`QrCodeBuilder`] struct which generates the QR Codes.
+//!
+//! A usage example in the form of an
+//! [Actix](actix.rs) web-server can be found [here](https://github.com/AntoniosBarotsis/qr-rs).
 
 pub mod error;
 
@@ -13,13 +16,9 @@ use std::io::Cursor;
 
 use error::Error;
 use fast_qr::convert::{image::ImageBuilder, Builder, Shape};
+use image::io::Reader as ImageReader;
 use image::Rgba;
 use image::{imageops, ImageBuffer, ImageFormat};
-use image::{io::Reader as ImageReader, DynamicImage};
-use once_cell::sync::OnceCell;
-
-const LOGO: &[u8] = include_bytes!("../assets/logo.png");
-static LOGO_IMAGE: OnceCell<DynamicImage> = OnceCell::new();
 
 /// The default QR Code size.
 pub const DEFAULT_SIZE: u32 = 600;
@@ -46,7 +45,7 @@ impl From<Rgb> for Rgba<u8> {
 /// Builder for generating QR Codes.
 ///
 ///
-/// Generates a QR Code in the form of a [`Result<Vec<u8>, Error>`].
+/// Generates a QR Code in the form of a [`Result<Vec<u8>, Error>`] and overlay a logo on top of it.
 /// The [`Vec<u8>`] is generated according to [`image::ImageOutputFormat::Png`].
 ///
 /// ## Argument requirements
@@ -65,9 +64,10 @@ impl From<Rgb> for Rgba<u8> {
 /// ## Examples
 ///
 /// ```
+/// let logo = include_bytes!("../../assets/logo.png");
 /// use qr_rs_lib::{QrCodeBuilder, Rgb};
 ///
-/// let qr_code = QrCodeBuilder::new("github.com")
+/// let qr_code = QrCodeBuilder::new("github.com", logo)
 ///   .with_size(600)
 ///   .with_bg_color(Rgb([255, 0, 0]))
 ///   .build();
@@ -75,18 +75,20 @@ impl From<Rgb> for Rgba<u8> {
 /// assert!(matches!(qr_code, Ok(_)));
 /// ```
 #[derive(Debug)]
-pub struct QrCodeBuilder<'a> {
+pub struct QrCodeBuilder<'a, 'b> {
   content: &'a str,
   size: Option<u32>,
   bg_color: Option<Rgb>,
+  logo: &'b [u8],
 }
 
-impl<'a> QrCodeBuilder<'a> {
-  pub const fn new(content: &'a str) -> QrCodeBuilder<'a> {
+impl<'a, 'b> QrCodeBuilder<'a, 'b> {
+  pub const fn new(content: &'a str, logo: &'b [u8]) -> QrCodeBuilder<'a, 'b> {
     Self {
       content,
       size: None,
       bg_color: None,
+      logo,
     }
   }
 
@@ -115,12 +117,18 @@ impl<'a> QrCodeBuilder<'a> {
     let content = self.content;
     let size = self.size.unwrap_or(DEFAULT_SIZE);
     let bg_color = self.bg_color;
+    let logo = self.logo;
 
-    generate_qr_code(content, size, bg_color)
+    generate_qr_code(content, size, bg_color, logo)
   }
 }
 
-fn generate_qr_code(content: &str, size: u32, bg_color: Option<Rgb>) -> Result<Vec<u8>, Error> {
+fn generate_qr_code(
+  content: &str,
+  size: u32,
+  bg_color: Option<Rgb>,
+  logo: &[u8],
+) -> Result<Vec<u8>, Error> {
   if !(SIZE_MIN..=SIZE_MAX).contains(&size) {
     return Err(Error::InputError(format!(
       "Size should be between {SIZE_MIN} and {SIZE_MAX}."
@@ -155,13 +163,10 @@ fn generate_qr_code(content: &str, size: u32, bg_color: Option<Rgb>) -> Result<V
     .to_pixmap(&qrcode)
     .encode_png()?;
 
-  // Get or init the logo
-  let logo = LOGO_IMAGE.get_or_init(|| {
-    let mut reader = ImageReader::new(Cursor::new(LOGO));
-    reader.set_format(ImageFormat::Png);
-
-    reader.decode().expect("File should be decodable")
-  });
+  // Get the logo
+  let mut reader = ImageReader::new(Cursor::new(logo));
+  reader.set_format(ImageFormat::Png);
+  let logo = reader.decode()?;
 
   // Convert QR Code to a PNG
   let mut img = ImageReader::new(std::io::Cursor::new(&img));

@@ -7,10 +7,17 @@
 A simple server that generates QR Codes and overlays a logo on top of them.
 
 <p align="center">
-  <img src="lib/assets/example.png" alt="Example" width="200">
+  <img src="assets/example.png" alt="Example" width="200">
 </p>
 
-> **Note** Currently, the [logo](./lib/assets/logo.png) is hardcoded, not sure if that will change.
+## The Server & the Library
+
+This repo contains 2 crates: the server and a reusable library at [`lib`](./lib/).
+
+The server uses the library in a specific manner according to 
+[GDSC Delft](https://gdsc.community.dev/delft-university-of-technology/)'s needs and is therefore
+not really reusable unlike the library itself. Feel free to use it as an example if you want to
+create something similar though! 
 
 ## Usage
 
@@ -72,5 +79,5 @@ create 100 strings of 150 characters and test how quick the QR Code generation i
 23ms on my machine which is pretty good for my use case.
 
 <p align="center">
-  <img src="lib/assets/plot.svg" alt="Benchmark" width="600">
+  <img src="assets/plot.svg" alt="Benchmark" width="600">
 </p>

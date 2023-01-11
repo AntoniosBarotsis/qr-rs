@@ -1094,7 +1094,6 @@ version = "0.1.0"
 dependencies = [
  "fast_qr",
  "image",
- "once_cell",
  "png",
 ]
 
