@@ -62,6 +62,15 @@ mod tests {
   }
 
   #[actix_web::test]
+  async fn test_get_qr_empty_content() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get().uri("/qr?content=").to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+  }
+
+  #[actix_web::test]
   async fn test_get_qr_with_content() {
     let app = test::init_service(App::new().service(qr)).await;
     let req = test::TestRequest::get()
@@ -135,6 +144,23 @@ mod tests {
   }
 
   #[actix_web::test]
+  async fn test_get_qr_with_invalid_color_length() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&bg_color=GGGGG")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+
+    let body = resp.into_body().try_into_bytes();
+    assert!(body.is_ok());
+
+    let body = body.unwrap();
+    assert_eq!(body, "\"Invalid color\"");
+  }
+
+  #[actix_web::test]
   async fn test_get_qr_with_size_color() {
     let app = test::init_service(App::new().service(qr)).await;
     let req = test::TestRequest::get()
@@ -143,5 +169,27 @@ mod tests {
     let resp = test::call_service(&app, req).await;
 
     assert_eq!(resp.status(), StatusCode::OK);
+  }
+
+  #[actix_web::test]
+  async fn test_get_qr_with_google_logo() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&logo=GooGlE")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::OK);
+  }
+
+  #[actix_web::test]
+  async fn test_get_qr_with_invalid_logo() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&logo=invalid")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
   }
 }
