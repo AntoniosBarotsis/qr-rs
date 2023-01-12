@@ -52,6 +52,9 @@ A rough `v1.0` roadmap can be found [here](https://github.com/AntoniosBarotsis/q
 
 ## Testing
 
+> **Note** This section talks about testing the *readability* of the generated QR Codes.
+  Conventional unit tests are in place.
+
 I made a few attempts at testing but none of them really resulted in what I wanted to so I ended up
 removing them.
 
