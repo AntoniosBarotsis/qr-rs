@@ -1,6 +1,7 @@
 use core::fmt;
 
 use actix_web::{http::StatusCode, HttpResponse, ResponseError};
+use common::logos::InvalidLogo;
 
 #[derive(Debug)]
 pub enum Error {
@@ -28,5 +29,11 @@ impl fmt::Display for Error {
 impl ResponseError for Error {
   fn error_response(&self) -> HttpResponse {
     HttpResponse::build(StatusCode::BAD_REQUEST).json(self.to_string())
+  }
+}
+
+impl From<InvalidLogo> for Error {
+  fn from(value: InvalidLogo) -> Self {
+    Self::InvalidLogo(value.0)
   }
 }

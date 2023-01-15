@@ -1,8 +1,9 @@
 use actix_web::{get, web, HttpResponse, Responder};
-use qr_rs_lib::{QrCodeBuilder, Rgb, DEFAULT_SIZE};
+use common::{hex_to_rgb, logos::Logo};
+use qr_rs_lib::{QrCodeBuilder, DEFAULT_SIZE};
 use serde::Deserialize;
 
-use crate::{error::Error, logos::Logo};
+use crate::error::Error;
 
 static WHITE_HEX: &str = "FFFFFF";
 
@@ -54,16 +55,4 @@ pub struct Input {
   size: Option<u32>,
   bg_color: Option<String>,
   logo: Option<String>,
-}
-
-fn hex_to_rgb(hex: &str) -> Option<Rgb> {
-  if hex.len() != 6 {
-    return None;
-  }
-
-  let x = u8::from_str_radix(&hex[0..2], 16).ok()?;
-  let y = u8::from_str_radix(&hex[2..4], 16).ok()?;
-  let z = u8::from_str_radix(&hex[4..6], 16).ok()?;
-
-  Some(Rgb([x, y, z]))
 }
