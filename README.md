@@ -22,7 +22,7 @@ create something similar though!
 
 ## Usage
 
-Start the server with `cargo run -r` then run the following to generate a QR Code that points to
+Start the server with `cargo run -r` (in the `server` directory) then run the following to generate a QR Code that points to
 `google.com` and save it to `tmp.png`. 
 
 ```sh
@@ -39,7 +39,7 @@ curl http://127.0.0.1:8080/
 You can also run this through Docker with
 
 ```sh
-docker build -t qr-rs .
+docker build -t qr-rs -f server/Dockerfile .
 docker run -p 8080:8080 qr-rs
 ```
 

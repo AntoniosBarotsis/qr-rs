@@ -1,5 +1,5 @@
 use crate::error::Error;
-const GOOGLE_LOGO: &[u8] = include_bytes!("../assets/logo.png");
+const GOOGLE_LOGO: &[u8] = include_bytes!("../../assets/logo.png");
 
 #[derive(Debug, Clone, Copy)]
 pub enum Logo {
