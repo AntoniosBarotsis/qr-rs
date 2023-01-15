@@ -49,7 +49,7 @@ The logo is currently stored in `assets/logo.png`.
 
 ## Roadmap
 
-A rough `v1.0` roadmap can be found [here](https://github.com/AntoniosBarotsis/qr-rs/issues/3).
+A `v1.0` roadmap can be found [here](https://github.com/users/AntoniosBarotsis/projects/3/views/1).
 
 ## Testing
 
