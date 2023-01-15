@@ -5,6 +5,7 @@ RUN apk add --no-cache musl-dev
 WORKDIR /qr-rs
 ADD ./server ./server
 ADD ./lib ./lib
+ADD ./common ./common
 ADD ./assets ./assets
 COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
