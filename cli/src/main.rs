@@ -55,9 +55,8 @@ fn main() -> Result<(), CliError> {
 mod tests {
   #[test]
   fn verify_cli() {
-    use clap::CommandFactory;
     use crate::Args;
+    use clap::CommandFactory;
     Args::command().debug_assert()
   }
 }
-
