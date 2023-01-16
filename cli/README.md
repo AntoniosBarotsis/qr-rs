@@ -18,7 +18,7 @@ cargo install --path cli
 You can get the list of available commands as follows:
 
 ```
-$ qrgen -h
+$ qrg -h
 A CLI for generating QR Codes with a logo overlay
 
 Usage: qrgen.exe [OPTIONS] <CONTENT>
