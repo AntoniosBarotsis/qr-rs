@@ -50,3 +50,14 @@ fn main() -> Result<(), CliError> {
 
   Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+  #[test]
+  fn verify_cli() {
+    use clap::CommandFactory;
+    use crate::Args;
+    Args::command().debug_assert()
+  }
+}
+
