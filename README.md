@@ -1,9 +1,6 @@
 # QR-RS
 
-[![Build - Server](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci-server.yml/badge.svg)](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci-server.yml)
-[![dependency status](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs/status.svg?path=.)](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs?path=.)
 [![codecov](https://codecov.io/github/AntoniosBarotsis/qr-rs/branch/master/graph/badge.svg?token=T7OWF8OHDR)](https://codecov.io/github/AntoniosBarotsis/qr-rs)
-<!-- [![Docker Image](https://img.shields.io/badge/Docker-Images-0092e6?logo=docker)](https://hub.docker.com/r/antoniosbarotsis/qr-rs) -->
 
 A simple server that generates QR Codes and overlays a logo on top of them.
 
@@ -20,33 +17,6 @@ The server uses the library in a specific manner according to
 not really reusable unlike the library itself. Feel free to use it as an example if you want to
 create something similar though! 
 
-## Usage
-
-Start the server with `cargo run -r` (in the `server` directory) then run the following to generate a QR Code that points to
-`google.com` and save it to `tmp.png`. 
-
-```sh
-curl http://127.0.0.1:8080/qr?content=google.com --output tmp.png
-./tmp.png
-```
-
-The endpoint documentation can be read with
-
-```sh
-curl http://127.0.0.1:8080/
-```
-
-You can also run this through Docker with
-
-```sh
-docker build -t qr-rs -f server/Dockerfile .
-docker run -p 8080:8080 qr-rs
-```
-
-If you are not used to Rust's build times, the first one usually takes some time :)
-
-The logo is currently stored in `assets/logo.png`.
-
 ## Roadmap
 
 A `v1.0` roadmap can be found [here](https://github.com/users/AntoniosBarotsis/projects/3/views/1).
@@ -56,7 +26,7 @@ A `v1.0` roadmap can be found [here](https://github.com/users/AntoniosBarotsis/p
 > **Note** This section talks about testing the *readability* of the generated QR Codes.
   Conventional unit tests are in place.
 
-I made a few attempts at testing but none of them really resulted in what I wanted to so I ended up
+I made a few attempts at testing but none of them really resulted in what I wanted so I ended up
 removing them.
 
 I first tried using [proptest](https://github.com/proptest-rs/proptest) which was great but I
@@ -66,9 +36,9 @@ expressions and filter the ones that contained valid ASCII characters only but t
 mean that I would not be able to tell how many of the tests that `proptest` ran were indeed 
 *running*.
 
-I then tried to find a URL dataset on sites like Kaggle, that's when I found out that the QR Code
-reader crate I was using could not always read the QR Codes even though my phone could which
-invalidated the tests.
+I then tried to find a URL dataset on sites like Kaggle, and that's when I found out that the
+QR Code reader crate I was using could not always read the QR Codes even though my phone could
+which invalidated the tests.
 
 I might come back to this in the future but for the time being, manual testing seems "good enough".
 
