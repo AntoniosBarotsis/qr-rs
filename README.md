@@ -13,10 +13,10 @@ A simple server that generates QR Codes and overlays a logo on top of them.
 
 This repo currently contains 4 crates:
 
-- `lib`: The core logic of the QR Code generation
-- `server`: A server you can run locally to use the `lib` crate
-- `cli`: A command line interface to the `lib` crate
-- `common`: Some reusable code for `server` and `cli`
+- [`lib`](./lib): The core logic of the QR Code generation
+- [`server`](./server): A server you can run locally to use the `lib` crate
+- [`cli`](./cli): A command line interface to the `lib` crate
+- [`common`](./common): Some reusable code for `server` and `cli`
 
 The server and CLI use the library in a specific manner according to 
 [GDSC Delft](https://gdsc.community.dev/delft-university-of-technology/)'s needs and are therefore
