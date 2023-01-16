@@ -1,6 +1,5 @@
 # QR-RS Server
 
-[![Build - Server](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci-server.yml/badge.svg)](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci-server.yml)
 [![dependency status](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs/status.svg?path=server)](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs?path=server)
 <!-- [![Docker Image](https://img.shields.io/badge/Docker-Images-0092e6?logo=docker)](https://hub.docker.com/r/antoniosbarotsis/qr-rs) -->
 
