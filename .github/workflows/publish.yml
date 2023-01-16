@@ -27,8 +27,6 @@ jobs:
         working-directory: ./lib
         run: cargo release publish --execute --no-confirm
 
-      # TODO This will probably not work, check name collisions
-      # TODO Maybe rename to `qrg`?
       - name: Publish cli
         working-directory: ./cli
         run: cargo release publish --execute --no-confirm

@@ -1,4 +1,6 @@
-# QrGen CLI
+# QRG CLI
+
+> QR Generate!
 
 ## Installation
 
