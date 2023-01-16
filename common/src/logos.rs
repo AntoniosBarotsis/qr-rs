@@ -1,5 +1,7 @@
-use crate::error::Error;
-const GOOGLE_LOGO: &[u8] = include_bytes!("../assets/logo.png");
+const GOOGLE_LOGO: &[u8] = include_bytes!("../../assets/logo.png");
+
+#[derive(Debug)]
+pub struct InvalidLogo(pub String);
 
 #[derive(Debug, Clone, Copy)]
 pub enum Logo {
@@ -7,7 +9,7 @@ pub enum Logo {
 }
 
 impl TryFrom<Option<String>> for Logo {
-  type Error = Error;
+  type Error = InvalidLogo;
 
   fn try_from(value: Option<String>) -> Result<Self, Self::Error> {
     Self::try_from(value.unwrap_or_else(|| "google".to_string()))
@@ -15,12 +17,12 @@ impl TryFrom<Option<String>> for Logo {
 }
 
 impl TryFrom<String> for Logo {
-  type Error = Error;
+  type Error = InvalidLogo;
 
   fn try_from(value: String) -> Result<Self, Self::Error> {
     match value.trim().to_lowercase().as_str() {
       "google" => Ok(Self::Google),
-      e => Err(Error::InvalidLogo(e.to_owned())),
+      e => Err(InvalidLogo(e.to_owned())),
     }
   }
 }

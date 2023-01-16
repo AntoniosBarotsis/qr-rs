@@ -1,9 +1,7 @@
 # QR-RS
 
-[![Build - Server](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci-server.yml/badge.svg)](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci-server.yml)
-[![dependency status](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs/status.svg?path=.)](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs?path=.)
+[![Build & Tests](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/github/AntoniosBarotsis/qr-rs/branch/master/graph/badge.svg?token=T7OWF8OHDR)](https://codecov.io/github/AntoniosBarotsis/qr-rs)
-<!-- [![Docker Image](https://img.shields.io/badge/Docker-Images-0092e6?logo=docker)](https://hub.docker.com/r/antoniosbarotsis/qr-rs) -->
 
 A simple server that generates QR Codes and overlays a logo on top of them.
 
@@ -11,41 +9,19 @@ A simple server that generates QR Codes and overlays a logo on top of them.
   <img src="assets/example.png" alt="Example" width="200">
 </p>
 
-## The Server & the Library
+## The Sub-Folders
 
-This repo contains 2 crates: the server and a reusable library at [`lib`](./lib/).
+This repo currently contains 4 crates:
 
-The server uses the library in a specific manner according to 
-[GDSC Delft](https://gdsc.community.dev/delft-university-of-technology/)'s needs and is therefore
+- `lib`: The core logic of the QR Code generation
+- `server`: A server you can run locally to use the `lib` crate
+- `cli`: A command line interface to the `lib` crate
+- `common`: Some reusable code for `server` and `cli`
+
+The server and CLI use the library in a specific manner according to 
+[GDSC Delft](https://gdsc.community.dev/delft-university-of-technology/)'s needs and are therefore
 not really reusable unlike the library itself. Feel free to use it as an example if you want to
 create something similar though! 
-
-## Usage
-
-Start the server with `cargo run -r` then run the following to generate a QR Code that points to
-`google.com` and save it to `tmp.png`. 
-
-```sh
-curl http://127.0.0.1:8080/qr?content=google.com --output tmp.png
-./tmp.png
-```
-
-The endpoint documentation can be read with
-
-```sh
-curl http://127.0.0.1:8080/
-```
-
-You can also run this through Docker with
-
-```sh
-docker build -t qr-rs .
-docker run -p 8080:8080 qr-rs
-```
-
-If you are not used to Rust's build times, the first one usually takes some time :)
-
-The logo is currently stored in `assets/logo.png`.
 
 ## Roadmap
 
@@ -56,7 +32,7 @@ A `v1.0` roadmap can be found [here](https://github.com/users/AntoniosBarotsis/p
 > **Note** This section talks about testing the *readability* of the generated QR Codes.
   Conventional unit tests are in place.
 
-I made a few attempts at testing but none of them really resulted in what I wanted to so I ended up
+I made a few attempts at testing but none of them really resulted in what I wanted so I ended up
 removing them.
 
 I first tried using [proptest](https://github.com/proptest-rs/proptest) which was great but I
@@ -66,9 +42,9 @@ expressions and filter the ones that contained valid ASCII characters only but t
 mean that I would not be able to tell how many of the tests that `proptest` ran were indeed 
 *running*.
 
-I then tried to find a URL dataset on sites like Kaggle, that's when I found out that the QR Code
-reader crate I was using could not always read the QR Codes even though my phone could which
-invalidated the tests.
+I then tried to find a URL dataset on sites like Kaggle, and that's when I found out that the
+QR Code reader crate I was using could not always read the QR Codes even though my phone could
+which invalidated the tests.
 
 I might come back to this in the future but for the time being, manual testing seems "good enough".
 

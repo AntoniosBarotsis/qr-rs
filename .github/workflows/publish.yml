@@ -23,8 +23,12 @@ jobs:
       - name: Login to Crates.io
         run: cargo login ${{ secrets.CRATESIO_TOKEN }}
 
-      - name: Crates.io
+      - name: Publish lib
         working-directory: ./lib
+        run: cargo release publish --execute --no-confirm
+
+      - name: Publish cli
+        working-directory: ./cli
         run: cargo release publish --execute --no-confirm
 
       - name: Login to Docker Hub

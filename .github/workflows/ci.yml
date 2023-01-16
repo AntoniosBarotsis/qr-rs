@@ -1,4 +1,4 @@
-name: Build & Tests (lib)
+name: Build & Tests
 
 on:
   push:
@@ -8,7 +8,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build_test_run:
+  build_test:
     name: Build and test on ${{ matrix.job.os }} (${{ matrix.job.target }})
     runs-on: ${{ matrix.job.os }}
     strategy:
@@ -35,13 +35,42 @@ jobs:
           key: "${{ matrix.job.os }}-${{ matrix.job.target }}"
 
       - name: Build
-        working-directory: ./lib
-        run: cargo build --all-targets
+        run: cargo build
 
       - name: Test
-        working-directory: ./lib
         run: cargo test
+  
+  docker_build_x86:
+    name: Docker build
+    runs-on: ubuntu-22.04
 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Docker build
+        run: docker build -f server/Dockerfile .
+
+  coverage:
+    name: coverage
+    runs-on: ubuntu-latest
+    container:
+      image: xd009642/tarpaulin:develop-nightly
+      options: --security-opt seccomp=unconfined
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Generate code coverage
+        run: |
+          cargo tarpaulin --workspace --out Xml
+
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          
   lint:
     name: Lint
     runs-on: ubuntu-22.04
@@ -61,9 +90,7 @@ jobs:
           rustup component add rustfmt
 
       - name: Run clippy
-        working-directory: ./lib
         run: cargo clippy -- -Dwarnings
 
       - name: Run fmt
-        working-directory: ./lib
         run: cargo fmt --check
