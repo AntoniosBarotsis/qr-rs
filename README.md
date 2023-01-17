@@ -9,6 +9,10 @@ A simple server and CLI that generates QR Codes and overlays a logo on top of th
   <img src="assets/example.png" alt="Example" width="200">
 </p>
 
+## Documentation
+
+Documentation has been moved to [here](https://antoniosbarotsis.github.io/qr-rs/).
+
 ## The Sub-Folders
 
 This repo currently contains 4 crates:
