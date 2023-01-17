@@ -3,11 +3,15 @@
 [![Build & Tests](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/github/AntoniosBarotsis/qr-rs/branch/master/graph/badge.svg?token=T7OWF8OHDR)](https://codecov.io/github/AntoniosBarotsis/qr-rs)
 
-A simple server that generates QR Codes and overlays a logo on top of them.
+A simple server and CLI that generates QR Codes and overlays a logo on top of them.
 
 <p align="center">
   <img src="assets/example.png" alt="Example" width="200">
 </p>
+
+## Documentation
+
+Documentation has been moved to [here](https://antoniosbarotsis.github.io/qr-rs/).
 
 ## The Sub-Folders
 

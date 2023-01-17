@@ -1,0 +1,40 @@
+site_name: QR-RS
+repo_url: https://github.com/AntoniosBarotsis/qr-rs
+repo_name: AntoniosBarotsis/qr-rs
+
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.path
+    - toc.follow
+    - content.action.edit
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - toc:
+      toc_depth: 3
+      permalink: true
+
+plugins:
+  - search
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+
+  - CLI: 
+    - Home: cli/index.md
+
+  - Server: 
+    - Home: server/index.md

@@ -1,11 +1,10 @@
-# QRG CLI
-
-> QR Generate!
+# CLI
 
 ## Installation
 
-> **Note** Make sure you have 
-  [Cargo installed](https://doc.rust-lang.org/cargo/getting-started/installation.html)
+!!! note
+    Make sure you have 
+    [Cargo installed](https://doc.rust-lang.org/cargo/getting-started/installation.html)!
 
 Currently, as the crate is not published, you can only install it from source with
 

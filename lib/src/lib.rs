@@ -7,8 +7,8 @@
 //!
 //! This crate exposes the [`QrCodeBuilder`] struct which generates the QR Codes.
 //!
-//! A usage example in the form of an
-//! [Actix](actix.rs) web-server can be found [here](https://github.com/AntoniosBarotsis/qr-rs).
+//! A usage example in the form of an [Actix](actix.rs) web-server can be found
+//! [here](https://github.com/AntoniosBarotsis/qr-rs/tree/master/server).
 
 pub mod error;
 
