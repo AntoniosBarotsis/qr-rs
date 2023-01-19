@@ -75,6 +75,7 @@ fn read_file(logo_source: &str) -> Result<Vec<u8>, CliError> {
   Ok(buffer)
 }
 
+// TODO Maybe move to the commons crate
 fn read_web(logo_source: &str) -> Result<Vec<u8>, CliError> {
   let resp = reqwest::blocking::get(logo_source)?;
   let b = resp.bytes()?;
