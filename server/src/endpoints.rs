@@ -39,7 +39,7 @@ pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, Error> {
     .and_then(|s| hex_to_rgb(&s))
     .ok_or(Error::InvalidColor)?;
 
-  let logo = Logo::try_from(input.logo)?.into();
+  let logo: &Vec<u8> = &Logo::try_from(input.logo)?.into();
 
   let qr_code = QrCodeBuilder::new(input.content.as_str(), logo)
     .with_size(input.size.unwrap_or(DEFAULT_SIZE))

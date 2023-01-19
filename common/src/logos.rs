@@ -27,10 +27,10 @@ impl TryFrom<String> for Logo {
   }
 }
 
-impl From<Logo> for &'static [u8] {
+impl From<Logo> for Vec<u8> {
   fn from(value: Logo) -> Self {
     match value {
-      Logo::Google => GOOGLE_LOGO,
+      Logo::Google => GOOGLE_LOGO.to_vec(),
     }
   }
 }
