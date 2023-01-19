@@ -16,6 +16,17 @@ impl TryFrom<Option<String>> for Logo {
   }
 }
 
+impl TryFrom<&String> for Logo {
+  type Error = InvalidLogo;
+
+  fn try_from(value: &String) -> Result<Self, Self::Error> {
+    match value.trim().to_lowercase().as_str() {
+      "google" => Ok(Self::Google),
+      e => Err(InvalidLogo(e.to_owned())),
+    }
+  }
+}
+
 impl TryFrom<String> for Logo {
   type Error = InvalidLogo;
 
