@@ -16,7 +16,7 @@ use std::io::Cursor;
 
 use error::Error;
 use fast_qr::convert::{image::ImageBuilder, Builder, Shape};
-use image::io::Reader as ImageReader;
+use image::{io::Reader as ImageReader, GenericImageView};
 use image::Rgba;
 use image::{imageops, ImageBuffer, ImageFormat};
 
@@ -164,9 +164,10 @@ fn generate_qr_code(
     .encode_png()?;
 
   // Get the logo
-  let mut reader = ImageReader::new(Cursor::new(logo));
-  reader.set_format(ImageFormat::Png);
-  let logo = reader.decode()?;
+  let logo = ImageReader::new(Cursor::new(logo))
+    .with_guessed_format()
+    .map_err(|_| Error::InputError("Image should be either PNG or JPEG".to_owned()))?
+    .decode()?;
 
   // Convert QR Code to a PNG
   let mut img = ImageReader::new(std::io::Cursor::new(&img));
