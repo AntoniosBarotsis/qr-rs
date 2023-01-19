@@ -12,5 +12,6 @@ license = "GPL-3.0"
 
 [dependencies]
 clap = { version = "4.1.1", features = ["derive"] }
+reqwest = { version = "0.11", features = ["blocking"] }
 qr-rs-lib = { path = "../lib" }
 common = { path = "../common" }
