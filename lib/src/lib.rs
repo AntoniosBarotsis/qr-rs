@@ -193,6 +193,19 @@ fn generate_qr_code(
   // Overlay logo on top of QR code
   let center = img.width() / 2;
   let logo = logo.resize(center / 2, center / 2, imageops::FilterType::Nearest);
+
+  // TODO Cleanup. This makes the logo circular so it matches the background
+  let logo = image::ImageBuffer::from_fn(logo.width(), logo.height(), |x, y| {
+    let center = logo.width() / 2;
+    let distance =
+      f64::from((center as i32 - x as i32).pow(2) + (center as i32 - y as i32).pow(2)).sqrt();
+      if distance < (f64::from(center)) {
+        logo.get_pixel(x, y)
+      } else {
+        Rgba(WHITE)
+      }
+  });
+
   let x = center - (logo.width() / 2);
   let y = center - (logo.height() / 2);
 
