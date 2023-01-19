@@ -26,3 +26,9 @@ impl From<std::io::Error> for CliError {
     Self::IoError(value.to_string())
   }
 }
+
+impl From<reqwest::Error> for CliError {
+  fn from(value: reqwest::Error) -> Self {
+    Self::IoError(value.to_string())
+  }
+}

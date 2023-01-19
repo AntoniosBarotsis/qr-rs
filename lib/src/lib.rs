@@ -16,9 +16,9 @@ use std::io::Cursor;
 
 use error::Error;
 use fast_qr::convert::{image::ImageBuilder, Builder, Shape};
-use image::{io::Reader as ImageReader, GenericImageView};
 use image::Rgba;
 use image::{imageops, ImageBuffer, ImageFormat};
+use image::{io::Reader as ImageReader, GenericImageView};
 
 /// The default QR Code size.
 pub const DEFAULT_SIZE: u32 = 600;
@@ -199,11 +199,11 @@ fn generate_qr_code(
     let center = logo.width() / 2;
     let distance =
       f64::from((center as i32 - x as i32).pow(2) + (center as i32 - y as i32).pow(2)).sqrt();
-      if distance < (f64::from(center)) {
-        logo.get_pixel(x, y)
-      } else {
-        Rgba(WHITE)
-      }
+    if distance < (f64::from(center)) {
+      logo.get_pixel(x, y)
+    } else {
+      Rgba(WHITE)
+    }
   });
 
   let x = center - (logo.width() / 2);
