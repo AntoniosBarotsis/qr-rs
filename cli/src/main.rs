@@ -35,16 +35,17 @@ pub struct Args {
   #[arg(short, long, default_value_t = ("google".to_owned()))]
   logo: String,
 
-  /// TODO
+  // TODO Alias?
+  /// Path to the logo (must be a valid PNG/JPEG).
   #[arg(long)]
   logo_source: Option<String>,
 
-  /// TODO
+  // TODO Alias?
+  /// URL to the logo (must be a valid PNG/JPEG).
   #[arg(long)]
   logo_web_source: Option<String>,
 }
 
-// TODO Cleanup and document
 fn main() -> Result<(), CliError> {
   let args = Args::parse();
 
@@ -70,6 +71,7 @@ fn main() -> Result<(), CliError> {
   Ok(())
 }
 
+/// Reads the file on the given path and returns its bytes.
 fn read_file(logo_source: &str) -> Result<Vec<u8>, CliError> {
   let mut f = File::open(logo_source)?;
   let mut buffer = Vec::new();
