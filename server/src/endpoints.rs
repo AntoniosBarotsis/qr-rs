@@ -3,7 +3,7 @@ use common::{hex_to_rgb, logos::Logo};
 use qr_rs_lib::{QrCodeBuilder, DEFAULT_SIZE};
 use serde::Deserialize;
 
-use crate::error::Error;
+use crate::error::ServerError;
 
 static WHITE_HEX: &str = "FFFFFF";
 
@@ -30,14 +30,14 @@ pub async fn help() -> impl Responder {
 
 #[get("qr")]
 #[allow(clippy::unused_async)]
-pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, Error> {
+pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, ServerError> {
   let input = content.into_inner();
 
   let bg_color = input
     .bg_color
     .or_else(|| Some(WHITE_HEX.to_owned()))
     .and_then(|s| hex_to_rgb(&s))
-    .ok_or(Error::InvalidColor)?;
+    .ok_or(ServerError::InvalidColor)?;
 
   let logo: &Vec<u8> = &Logo::try_from(input.logo)?.into();
 
