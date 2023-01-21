@@ -12,7 +12,7 @@ A simple server and CLI that generates QR Codes and overlays a logo on top of th
 
 ## Documentation
 
-Documentation has been moved to [here](https://antoniosbarotsis.github.io/qr-rs/).
+Documentation has been moved [here](https://antoniosbarotsis.github.io/qr-rs/).
 
 ## The Sub-Folders
 
