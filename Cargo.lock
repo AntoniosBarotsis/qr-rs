@@ -455,6 +455,7 @@ name = "common"
 version = "0.1.0"
 dependencies = [
  "qr-rs-lib",
+ "reqwest",
 ]
 
 [[package]]
@@ -1598,7 +1599,6 @@ dependencies = [
  "clap 4.1.1",
  "common",
  "qr-rs-lib",
- "reqwest",
 ]
 
 [[package]]

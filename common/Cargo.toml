@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 qr-rs-lib = { path = "../lib" }
+reqwest = { version = "0.11", features = ["blocking"] }

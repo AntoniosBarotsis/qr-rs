@@ -7,7 +7,7 @@ use std::{
 };
 
 use clap::Parser;
-use common::{hex_to_rgb, logos::Logo};
+use common::{hex_to_rgb, logos::Logo, read_image_bytes};
 use error::CliError;
 use qr_rs_lib::{QrCodeBuilder, DEFAULT_SIZE};
 
@@ -48,9 +48,12 @@ pub struct Args {
 fn main() -> Result<(), CliError> {
   let args = Args::parse();
 
+  // TODO Looks ugly
   let logo: Vec<u8> = match (&args.logo_source, &args.logo_web_source) {
     (Some(l), Some(_)) | (Some(l), None) => read_file(l)?,
-    (None, Some(l)) => read_web(l)?,
+    (None, Some(l)) => {
+      read_image_bytes(l).ok_or_else(|| CliError::IoError(format!("Error fetching image from '{l}'")))?
+    }
     (None, None) => Logo::try_from(&args.logo)?.into(),
   };
 
@@ -73,19 +76,6 @@ fn read_file(logo_source: &str) -> Result<Vec<u8>, CliError> {
   let _ = f.read_to_end(&mut buffer)?;
 
   Ok(buffer)
-}
-
-// TODO Maybe move to the commons crate
-fn read_web(logo_source: &str) -> Result<Vec<u8>, CliError> {
-  let resp = reqwest::blocking::get(logo_source)?;
-  let b = resp.bytes()?;
-  let mut res = Vec::<u8>::new();
-
-  for yo in b.into_iter() {
-    res.push(yo);
-  }
-
-  Ok(res)
 }
 
 #[cfg(test)]
