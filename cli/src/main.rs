@@ -35,26 +35,26 @@ pub struct Args {
   #[arg(short, long, default_value_t = ("google".to_owned()))]
   logo: String,
 
-  // TODO Alias?
   /// Path to the logo (must be a valid PNG/JPEG).
-  #[arg(long)]
+  #[arg(long, visible_alias("path"))]
   logo_source: Option<String>,
 
-  // TODO Alias?
   /// URL to the logo (must be a valid PNG/JPEG).
-  #[arg(long)]
+  #[arg(long, visible_alias("web"))]
   logo_web_source: Option<String>,
 }
 
 fn main() -> Result<(), CliError> {
   let args = Args::parse();
 
-  // TODO Looks ugly
+  // logo_source > logo_web_source > logo
   let logo: Vec<u8> = match (&args.logo_source, &args.logo_web_source) {
+    // If logo_source exists (ignoring logo_web_source)
     (Some(l), Some(_)) | (Some(l), None) => read_file(l)?,
-    (None, Some(l)) => {
-      read_image_bytes(l).ok_or_else(|| CliError::IoError(format!("Error fetching image from '{l}'")))?
-    }
+    // If logo_web_source exists
+    (None, Some(l)) => read_image_bytes(l)
+      .ok_or_else(|| CliError::IoError(format!("Error fetching image from '{l}'")))?,
+    // If neither, use logo
     (None, None) => Logo::try_from(&args.logo)?.into(),
   };
 
