@@ -1,5 +1,5 @@
 use actix_web::{get, web, HttpResponse, Responder};
-use common::{hex_to_rgb, logos::Logo};
+use common::{hex_to_rgb, logos::Logo, read_image_bytes};
 use qr_rs_lib::{QrCodeBuilder, DEFAULT_SIZE};
 use serde::Deserialize;
 
@@ -21,7 +21,11 @@ pub async fn help() -> impl Responder {
   let msg = concat!(
     "Endpoints:\n",
     " - /qr [GET]\n",
-    "   Query Params: content={string}, size={number}, bg_color={hex}\n",
+    "   Query Params:\n",
+    "       content:         string\n",
+    "       size:            number    [optional]\n",
+    "       bg_color:        hex       [optional]\n",
+    "       logo_web_source: string    [optional]\n\n",
     "   Example: /qr?content=https://github.com/AntoniosBarotsis\n"
   );
 
@@ -39,9 +43,13 @@ pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, ServerError>
     .and_then(|s| hex_to_rgb(&s))
     .ok_or(ServerError::InvalidColor)?;
 
-  let logo: &Vec<u8> = &Logo::try_from(input.logo)?.into();
+  let logo = match input.logo_web_source {
+    Some(l) => read_image_bytes(&l),
+    None => Some(Logo::try_from(input.logo)?.into()),
+  }
+  .ok_or_else(|| ServerError::InvalidLogo("Error reading logo".to_owned()))?;
 
-  let qr_code = QrCodeBuilder::new(input.content.as_str(), logo)
+  let qr_code = QrCodeBuilder::new(input.content.as_str(), &logo)
     .with_size(input.size.unwrap_or(DEFAULT_SIZE))
     .with_bg_color(bg_color)
     .build()?;
@@ -55,4 +63,5 @@ pub struct Input {
   size: Option<u32>,
   bg_color: Option<String>,
   logo: Option<String>,
+  logo_web_source: Option<String>,
 }
