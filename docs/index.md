@@ -38,6 +38,8 @@ will be published as a Docker image.
 
 The `common` crate contains very little code and there's no reason to publish it on its own.
 
+<!-- TODO Explain current and potential future deployment -->
+
 ## Contributing
 
 Any feature requests, bug reports or general feedback is welcome!

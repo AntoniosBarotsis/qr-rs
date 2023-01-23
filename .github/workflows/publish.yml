@@ -1,3 +1,5 @@
+# TODO Maybe it would be more convenient to make this an on:release workflow. Have to make sure
+# I can obtain the release tag correctly.
 name: Create a release
 on:
   workflow_dispatch:
