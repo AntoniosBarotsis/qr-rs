@@ -242,5 +242,7 @@ fn add_logo(img: &mut DynamicImage, logo: &DynamicImage) {
 
 /// Calculates distance between `(c, c)` and `(x, y)`.
 fn distance(c: u32, x: u32, y: u32) -> f64 {
-  f64::from((c - x).pow(2) + (c - y).pow(2)).sqrt()
+  // Casting here is fine as I cast positive values that are nowhere near large enough to overflow.
+  #![allow(clippy::cast_possible_wrap)]
+  f64::from((c as i32 - x as i32).pow(2) + (c as i32 - y as i32).pow(2)).sqrt()
 }
