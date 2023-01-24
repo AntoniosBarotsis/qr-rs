@@ -3,7 +3,7 @@
 mod error;
 use std::{
   fs::File,
-  io::{prelude::Read, Write},
+  io::Write,
 };
 
 use clap::Parser;
@@ -50,7 +50,7 @@ fn main() -> Result<(), CliError> {
   // logo_source > logo_web_source > logo
   let logo: Vec<u8> = match (&args.logo_source, &args.logo_web_source) {
     // If logo_source exists (ignoring logo_web_source)
-    (Some(l), Some(_)) | (Some(l), None) => read_file(l)?,
+    (Some(l), Some(_) | None) => read_file(l)?,
     // If logo_web_source exists
     (None, Some(l)) => read_image_bytes(l)
       .ok_or_else(|| CliError::IoError(format!("Error fetching image from '{l}'")))?,
@@ -73,11 +73,9 @@ fn main() -> Result<(), CliError> {
 
 /// Reads the file on the given path and returns its bytes.
 fn read_file(logo_source: &str) -> Result<Vec<u8>, CliError> {
-  let mut f = File::open(logo_source)?;
-  let mut buffer = Vec::new();
-  let _ = f.read_to_end(&mut buffer)?;
+  let bytes = std::fs::read(logo_source)?;
 
-  Ok(buffer)
+  Ok(bytes)
 }
 
 #[cfg(test)]
@@ -86,6 +84,6 @@ mod tests {
   fn verify_cli() {
     use crate::Args;
     use clap::CommandFactory;
-    Args::command().debug_assert()
+    Args::command().debug_assert();
   }
 }

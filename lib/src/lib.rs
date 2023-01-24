@@ -167,7 +167,7 @@ fn generate_qr_code(
   // Get the logo
   let logo = ImageReader::new(Cursor::new(logo))
     .with_guessed_format()
-    .map_err(|_| Error::InputError("Image should be either PNG or JPEG".to_owned()))?
+    .map_err(|_e| Error::InputError("Image should be either PNG or JPEG".to_owned()))?
     .decode()?;
 
   // Convert QR Code to a PNG
@@ -191,7 +191,7 @@ fn generate_qr_code(
     });
   }
 
-  add_logo(&mut img, logo);
+  add_logo(&mut img, &logo);
 
   let mut bytes: Vec<u8> = Vec::new();
   img.write_to(
@@ -203,7 +203,7 @@ fn generate_qr_code(
 }
 
 /// Adds the logo with a white, circular background in the middle of the image.
-fn add_logo(img: &mut DynamicImage, logo: DynamicImage) {
+fn add_logo(img: &mut DynamicImage, logo: &DynamicImage) {
   // Shrink logo to work with the 25% QR Code error correction.
   let logo = logo.resize(img.width() / 4, img.width() / 4, imageops::FilterType::Nearest);
   

@@ -25,7 +25,7 @@ pub fn read_image_bytes(link: &str) -> Option<Vec<u8>> {
   let content_type_is_image = resp
     .headers()
     .get("Content-Type")
-    .map(|x| x.to_str())?
+    .map(reqwest::header::HeaderValue::to_str)?
     .ok()
     .map(|content_type| content_type.contains("image"))?;
 
