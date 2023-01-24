@@ -1,5 +1,5 @@
 use actix_web::{get, web, HttpResponse, Responder};
-use common::{hex_to_rgb, logos::Logo, read_image_bytes};
+use common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
 use qr_rs_lib::{QrCodeBuilder, DEFAULT_SIZE};
 use serde::Deserialize;
 
@@ -44,7 +44,7 @@ pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, ServerError>
     .ok_or(ServerError::InvalidColor)?;
 
   let logo = match input.logo_web_source {
-    Some(l) => read_image_bytes(&l),
+    Some(l) => read_image_bytes_async(&l).await,
     None => Some(Logo::try_from(input.logo)?.into()),
   }
   .ok_or_else(|| ServerError::InvalidLogo("Error reading logo".to_owned()))?;
