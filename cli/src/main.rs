@@ -1,10 +1,7 @@
 #![allow(dead_code, unused_parens)]
 
 mod error;
-use std::{
-  fs::File,
-  io::Write,
-};
+use std::{fs::File, io::Write};
 
 use clap::Parser;
 use common::{hex_to_rgb, logos::Logo, read_image_bytes};

@@ -205,8 +205,12 @@ fn generate_qr_code(
 /// Adds the logo with a white, circular background in the middle of the image.
 fn add_logo(img: &mut DynamicImage, logo: &DynamicImage) {
   // Shrink logo to work with the 25% QR Code error correction.
-  let logo = logo.resize(img.width() / 4, img.width() / 4, imageops::FilterType::Nearest);
-  
+  let logo = logo.resize(
+    img.width() / 4,
+    img.width() / 4,
+    imageops::FilterType::Nearest,
+  );
+
   let img_center = img.width() / 2;
   let logo_center = logo.width() / 2;
 
