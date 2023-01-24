@@ -16,9 +16,9 @@ use std::io::Cursor;
 
 use error::Error;
 use fast_qr::convert::{image::ImageBuilder, Builder, Shape};
-use image::Rgba;
-use image::{imageops, ImageBuffer, ImageFormat};
+use image::{imageops, ImageFormat};
 use image::{io::Reader as ImageReader, GenericImageView};
+use image::{DynamicImage, Rgba};
 
 /// The default QR Code size.
 pub const DEFAULT_SIZE: u32 = 600;
@@ -29,6 +29,7 @@ pub const SIZE_MAX: u32 = 1000;
 
 const BLACK: [u8; 4] = [0, 0, 0, 255];
 const WHITE: [u8; 4] = [255, 255, 255, 255];
+const TRANSPARENT: [u8; 4] = [255, 255, 255, 0];
 
 /// Wrapper around [Rgba] but without the `a` value.
 #[derive(Debug, Clone, Copy)]
@@ -190,31 +191,7 @@ fn generate_qr_code(
     });
   }
 
-  // Overlay logo on top of QR code
-  let center = img.width() / 2;
-  let logo = logo.resize(center / 2, center / 2, imageops::FilterType::Nearest);
-
-  // TODO Cleanup. This makes the logo circular so it matches the background
-  let logo = image::ImageBuffer::from_fn(logo.width(), logo.height(), |x, y| {
-    let center = logo.width() / 2;
-    let distance =
-      f64::from((center as i32 - x as i32).pow(2) + (center as i32 - y as i32).pow(2)).sqrt();
-    if distance < (f64::from(center)) {
-      logo.get_pixel(x, y)
-    } else {
-      Rgba(WHITE)
-    }
-  });
-
-  let x = center - (logo.width() / 2);
-  let y = center - (logo.height() / 2);
-
-  // Create white bg for the logo
-  let logo_bg = generate_circular_padding(center);
-
-  // Overlay the logo
-  imageops::overlay(&mut img, &logo_bg, 0, 0);
-  imageops::overlay(&mut img, &logo, x.into(), y.into());
+  add_logo(&mut img, logo);
 
   let mut bytes: Vec<u8> = Vec::new();
   img.write_to(
@@ -225,24 +202,41 @@ fn generate_qr_code(
   Ok(bytes)
 }
 
-fn generate_circular_padding(center: u32) -> ImageBuffer<Rgba<u8>, Vec<u8>> {
-  // Casting here is fine as I cast positive values that are nowhere near large enough to overflow.
-  // This is needed because `center - x` overflows.
-  #![allow(clippy::cast_possible_wrap)]
+/// Adds the logo with a white, circular background in the middle of the image.
+fn add_logo(img: &mut DynamicImage, logo: DynamicImage) {
+  // Shrink logo to work with the 25% QR Code error correction.
+  let logo = logo.resize(img.width() / 4, img.width() / 4, imageops::FilterType::Nearest);
+  
+  let img_center = img.width() / 2;
+  let logo_center = logo.width() / 2;
 
-  let casted_center = center as i32;
-  image::ImageBuffer::from_fn(center * 2, center * 2, |x, y| {
-    let distance =
-      f64::from((casted_center - x as i32).pow(2) + (casted_center - y as i32).pow(2)).sqrt();
+  // Turns the logo into a circle.
+  let logo = image::ImageBuffer::from_fn(logo.width(), logo.height(), |x, y| {
+    if distance(logo_center, x, y) < (f64::from(logo_center)) {
+      logo.get_pixel(x, y)
+    } else {
+      Rgba(WHITE)
+    }
+  });
 
-    let transparent: [u8; 4] = [255, 255, 255, 0];
-
+  let logo_bg = image::ImageBuffer::from_fn(img.width(), img.width(), |x, y| {
     // The 3.5 is just a "magic number ✨" that makes the white circle
     // just big enough for my taste.
-    if distance < (f64::from(center) / 3.5) {
+    if distance(img_center, x, y) < (f64::from(img_center) / 3.7) {
       Rgba(WHITE)
     } else {
-      Rgba(transparent)
+      Rgba(TRANSPARENT)
     }
-  })
+  });
+
+  let x = img_center - (logo.width() / 2);
+  let y = img_center - (logo.height() / 2);
+
+  imageops::overlay(img, &logo_bg, 0, 0);
+  imageops::overlay(img, &logo, x.into(), y.into());
+}
+
+/// Calculates distance between `(c, c)` and `(x, y)`.
+fn distance(c: u32, x: u32, y: u32) -> f64 {
+  f64::from((c - x).pow(2) + (c - y).pow(2)).sqrt()
 }
