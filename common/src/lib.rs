@@ -21,7 +21,6 @@ pub fn hex_to_rgb(hex: &str) -> Option<Rgb> {
 pub async fn read_image_bytes_async(link: &str) -> Option<Vec<u8>> {
   let resp = reqwest::get(link).await.ok()?;
 
-  // TODO Test with actual links
   let content_type_is_image = resp
     .headers()
     .get("Content-Type")
