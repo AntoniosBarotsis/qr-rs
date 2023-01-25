@@ -4,7 +4,7 @@ mod error;
 use std::{fs::File, io::Write};
 
 use clap::Parser;
-use common::{hex_to_rgb, logos::Logo, read_image_bytes};
+use common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
 use error::CliError;
 use qr_rs_lib::{QrCodeBuilder, DEFAULT_SIZE};
 
@@ -41,7 +41,8 @@ pub struct Args {
   logo_web_source: Option<String>,
 }
 
-fn main() -> Result<(), CliError> {
+#[tokio::main]
+async fn main() -> Result<(), CliError> {
   let args = Args::parse();
 
   // logo_source > logo_web_source > logo
@@ -49,7 +50,8 @@ fn main() -> Result<(), CliError> {
     // If logo_source exists (ignoring logo_web_source)
     (Some(l), Some(_) | None) => read_file(l)?,
     // If logo_web_source exists
-    (None, Some(l)) => read_image_bytes(l)
+    (None, Some(l)) => read_image_bytes_async(l)
+      .await
       .ok_or_else(|| CliError::IoError(format!("Error fetching image from '{l}'")))?,
     // If neither, use logo
     (None, None) => Logo::try_from(&args.logo)?.into(),
