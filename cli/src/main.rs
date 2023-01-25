@@ -1,7 +1,7 @@
 #![allow(dead_code, unused_parens)]
 
 mod error;
-use std::{fs::File, io::Write};
+use std::{fs::File, io::Write, str::FromStr};
 
 use clap::Parser;
 use common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
@@ -54,7 +54,7 @@ async fn main() -> Result<(), CliError> {
       .await
       .ok_or_else(|| CliError::IoError(format!("Error fetching image from '{l}'")))?,
     // If neither, use logo
-    (None, None) => Logo::try_from(&args.logo)?.into(),
+    (None, None) => Logo::from_str(&args.logo)?.into(),
   };
 
   let bg_color = hex_to_rgb(&args.bg_color);
