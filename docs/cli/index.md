@@ -9,8 +9,10 @@
 Currently, as the crate is not published, you can only install it from source with
 
 ```sh
-cargo install --path cli
+cargo install --path cli --force
 ```
+
+This also works for updating it (make sure you pull first!)
 
 ## Usage
 
@@ -26,12 +28,22 @@ Arguments:
   <CONTENT>  The text the qr code should contain
 
 Options:
-  -d, --destination <DESTINATION>  The filename the QR Code should be saved in [default: out.png]
-  -s, --size <SIZE>                The size of the QR Code [default: 600]
-  -c, --bg-color <BG_COLOR>        The background color of the QR Code (in hex) [default: FFFFFF]
-  -l, --logo <LOGO>                The name of the logo to use in the overlay [default: google]
-  -h, --help                       Print help
-  -V, --version                    Print version
+  -d, --destination <DESTINATION>
+          The filename the QR Code should be saved in [default: out.png]
+  -s, --size <SIZE>
+          The size of the QR Code [default: 600]
+  -c, --bg-color <BG_COLOR>
+          The background color of the QR Code (in hex) [default: FFFFFF]
+  -l, --logo <LOGO>
+          The name of the logo to use in the overlay [default: google]
+      --logo-source <LOGO_SOURCE>
+          Path to the logo (must be a valid PNG/JPEG) [aliases: path]
+      --logo-web-source <LOGO_WEB_SOURCE>
+          URL to the logo (must be a valid PNG/JPEG) [aliases: web]
+  -h, --help
+          Print help
+  -V, --version
+          Print version
 ```
 
 I will try to keep this outdated but you should run it for yourself just in case some command
@@ -43,4 +55,10 @@ Create a QR Code pointing to `github.com` and dump the image to a file called `t
 
 ```sh
 qrg github.com -d tmp.png
+```
+
+Create a QR Code with the text `Hello, World!` using Github's logo and a dark background
+
+```sh
+qrg "Hello, World!" -c 36393e --web https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
 ```

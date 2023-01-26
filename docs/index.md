@@ -33,8 +33,12 @@ The project is currently split into multiple crates
 - [`cli`](https://github.com/AntoniosBarotsis/qr-rs/tree/master/cli): A command line interface to the `lib` crate
 - [`common`](https://github.com/AntoniosBarotsis/qr-rs/tree/master/common): Some reusable code for `server` and `cli`
 
-The `lib` and `cli` crates will be published on [`crates.io`](crates.io) while the `server` crate
-will be published as a Docker image.
+The `lib` and `cli` crates will be published on [`crates.io`](https://crates.io) while the
+`server` crate will be published as a Docker image.
+
+The `cli` might be uploaded to other package managers, however, that's something that I don't
+want to tackle alone so if you are looking for a place to contribute, start 
+[here](https://github.com/AntoniosBarotsis/qr-rs/issues/11) :)
 
 The `common` crate contains very little code and there's no reason to publish it on its own.
 

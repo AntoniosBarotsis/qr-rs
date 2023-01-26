@@ -25,8 +25,14 @@ pub async fn help() -> impl Responder {
     "       content:         string\n",
     "       size:            number    [optional]\n",
     "       bg_color:        hex       [optional]\n",
+    "       logo:            string    [optional]\n",
     "       logo_web_source: string    [optional]\n\n",
-    "   Example: /qr?content=https://github.com/AntoniosBarotsis\n"
+    "   Example: /qr?content=https://github.com/AntoniosBarotsis\n\n",
+    "   - content:         The text the qr code should contain.\n",
+    "   - size:            The size of the QR Code                      [default: 600]\n",
+    "   - bg_color:        The background color of the QR Code (in hex) [default: FFFFFF]\n",
+    "   - logo:            The name of the logo to use in the overlay.  [default: google]\n",
+    "   - logo_web_source: URL to the logo (must be a valid PNG/JPEG)   [default: None]"
   );
 
   HttpResponse::Ok().body(msg)
