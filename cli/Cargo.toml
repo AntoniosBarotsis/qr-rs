@@ -14,3 +14,4 @@ license = "GPL-3.0"
 clap = { version = "4.1.1", features = ["derive"] }
 qr-rs-lib = { path = "../lib" }
 common = { path = "../common" }
+tokio = { version = "1.24.1", features = ["rt", "macros"] }

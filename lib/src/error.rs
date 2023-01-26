@@ -9,7 +9,7 @@ pub enum Error {
   /// Represents an error in the QR Code generation. If this happens there's likely a bug in this
   /// crate.
   QrError(String),
-  /// Represents an error in the encoding of the PNG image. If this happens there's likely a bug
+  /// Represents an error in the encoding of the image. If this happens there's likely a bug
   /// in this crate.
   ImageError(String),
 }

@@ -191,4 +191,37 @@ mod tests {
 
     assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
   }
+
+  #[actix_web::test]
+  async fn test_get_qr_with_logo_web_source() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&logo_web_source=https://avatars.githubusercontent.com/u/50240570")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::OK);
+  }
+
+  #[actix_web::test]
+  async fn test_get_qr_with_invalid_logo_web_source_url() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&logo_web_source=https://avatars.githubus")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+  }
+
+  #[actix_web::test]
+  async fn test_get_qr_with_invalid_logo_web_source_image() {
+    let app = test::init_service(App::new().service(qr)).await;
+    let req = test::TestRequest::get()
+      .uri("/qr?content=https://github.com/AntoniosBarotsis/qr-rs&logo_web_source=https://avatars.githubusercontent.com")
+      .to_request();
+    let resp = test::call_service(&app, req).await;
+
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+  }
 }

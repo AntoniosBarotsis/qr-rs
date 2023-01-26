@@ -1,6 +1,6 @@
 FROM rust:1.64-alpine as builder
 
-RUN apk add --no-cache musl-dev
+RUN apk add --no-cache musl-dev libressl-dev
 
 WORKDIR /qr-rs
 ADD ./server ./server
