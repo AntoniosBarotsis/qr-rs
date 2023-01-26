@@ -219,7 +219,7 @@ fn add_logo(img: &mut DynamicImage, logo: &DynamicImage) {
     if distance(logo_center, x, y) < (f64::from(logo_center)) {
       logo.get_pixel(x, y)
     } else {
-      Rgba(WHITE)
+      Rgba(TRANSPARENT)
     }
   });
 
