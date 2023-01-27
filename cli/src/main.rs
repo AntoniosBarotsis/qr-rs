@@ -1,7 +1,7 @@
 #![allow(dead_code, unused_parens)]
 
 mod error;
-use std::{fs::File, io::Write, str::FromStr};
+use std::str::FromStr;
 
 use clap::Parser;
 use common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
@@ -42,8 +42,15 @@ pub struct Args {
 }
 
 #[tokio::main]
+#[cfg(not(tarpaulin_include))]
 async fn main() -> Result<(), CliError> {
-  let args = Args::parse();
+  // The command line args are passed here as an iterable
+  // instead of parsing them directly to facilitate testing.
+  qrg(std::env::args().collect::<Vec<_>>()).await
+}
+
+async fn qrg(args: Vec<String>) -> Result<(), CliError> {
+  let args = Args::parse_from(args);
 
   // logo_source > logo_web_source > logo
   let logo: Vec<u8> = match (&args.logo_source, &args.logo_web_source) {
@@ -59,13 +66,20 @@ async fn main() -> Result<(), CliError> {
 
   let bg_color = hex_to_rgb(&args.bg_color);
 
+  #[allow(unused_variables)] // Silence warning for cfg(test)
   let qr_code = QrCodeBuilder::new(&args.content, &logo)
     .with_size(args.size)
     .with_some_bg_color(bg_color)
     .build()?;
 
-  let mut f = File::create(args.destination)?;
-  f.write_all(&qr_code)?;
+  // Don't save any images when running tests
+  #[cfg(not(test))]
+  {
+    use std::{fs::File, io::Write};
+
+    let mut f = File::create(args.destination)?;
+    f.write_all(&qr_code)?;
+  }
 
   Ok(())
 }
@@ -78,11 +92,67 @@ fn read_file(logo_source: &str) -> Result<Vec<u8>, CliError> {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used)]
 mod tests {
+  use crate::qrg;
+
   #[test]
   fn verify_cli() {
     use crate::Args;
     use clap::CommandFactory;
     Args::command().debug_assert();
+  }
+
+  /// This is **COMPLETELY** unnecessary and overkill but I wanted to try and make a macro.
+  ///
+  /// This takes in string slices and generates a vector of [`String`]s to be used in
+  /// [`Args::parse_from`] for testing.
+  ///
+  /// It's supposed to emulate command line arguments, as the name suggests.
+  macro_rules! cli_args {
+    ($($x: expr),*) => {{
+      // First arg is ignored, command line args start at index 1.
+      let vector: Vec<String> = vec!["".to_owned(), $($x.to_owned()),*];
+      vector
+    }}
+  }
+
+  #[tokio::test]
+  async fn generate_simple() {
+    let args = cli_args!("content");
+    let res = qrg(args).await;
+    assert!(res.is_ok());
+  }
+
+  #[tokio::test]
+  async fn generate_path() {
+    let args = cli_args!("content", "--path", "../assets/example.png");
+    let res = qrg(args).await;
+    assert!(res.is_ok());
+  }
+
+  #[tokio::test]
+  async fn generate_path_invalid() {
+    let args = cli_args!("content", "--path", "../assets/idk.png");
+    let res = qrg(args).await;
+    assert!(res.is_err());
+  }
+
+  #[tokio::test]
+  async fn generate_web() {
+    let args = cli_args!(
+      "content",
+      "--web",
+      "https://github.com/AntoniosBarotsis/qr-rs/raw/master/assets/example.png"
+    );
+    let res = qrg(args).await;
+    assert!(res.is_ok());
+  }
+
+  #[tokio::test]
+  async fn generate_web_invalid() {
+    let args = cli_args!("content", "--web", "https://github.com/");
+    let res = qrg(args).await;
+    assert!(res.is_err());
   }
 }

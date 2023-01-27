@@ -79,6 +79,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.job.target }}
+
       - name: Use cached dependencies
         uses: Swatinem/rust-cache@v2
         with:

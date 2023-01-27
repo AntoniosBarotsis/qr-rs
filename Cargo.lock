@@ -1598,6 +1598,7 @@ version = "0.1.0"
 dependencies = [
  "clap 4.1.1",
  "common",
+ "pretty_assertions",
  "qr-rs-lib",
  "tokio",
 ]
