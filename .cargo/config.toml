@@ -111,4 +111,13 @@ rustflags = [
     "-Wunused_results",
     "-Aclippy::module-name-repetitions",
     "-Wvariant_size_differences",
+    "-Wclippy::manual_let_else",
+    "-Wclippy::bool_to_int_with_if",
+    "-Wclippy::manual_range_contains",
+    "-Wclippy::match_like_matches_macro",
+    "-Wclippy::needless_doctest_main",
+    "-Wclippy::needless_pass_by_value",
+    "-Wclippy::similar_names",
+    "-Wclippy::uninlined_format_args",
+    "-Wclippy::unwrap_or_else_default",
 ]
