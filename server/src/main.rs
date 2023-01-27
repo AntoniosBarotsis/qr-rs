@@ -9,6 +9,7 @@ use crate::endpoints::index;
 static PORT: u16 = 8080;
 
 #[actix_web::main]
+#[cfg(not(tarpaulin_include))]
 async fn main() -> std::io::Result<()> {
   println!("Starting server on port {PORT}");
 
