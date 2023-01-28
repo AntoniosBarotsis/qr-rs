@@ -34,11 +34,14 @@ jobs:
         with:
           key: "${{ matrix.job.os }}-${{ matrix.job.target }}"
 
+      - name: Install nextest
+        uses: taiki-e/install-action@nextest
+
       - name: Build
         run: cargo build
 
       - name: Test
-        run: cargo test
+        run: cargo nextest run
   
   docker_build_x86:
     name: Docker build
