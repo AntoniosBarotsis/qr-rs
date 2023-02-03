@@ -32,14 +32,16 @@ Options:
           The filename the QR Code should be saved in [default: out.png]
   -s, --size <SIZE>
           The size of the QR Code [default: 600]
-  -c, --bg-color <BG_COLOR>
-          The background color of the QR Code (in hex) [default: FFFFFF]
   -l, --logo <LOGO>
           The name of the logo to use in the overlay [default: google]
       --logo-source <LOGO_SOURCE>
           Path to the logo (must be a valid PNG/JPEG) [aliases: path]
       --logo-web-source <LOGO_WEB_SOURCE>
           URL to the logo (must be a valid PNG/JPEG) [aliases: web]
+  -c, --bg-color <BG_COLOR>
+          The background color of the QR Code (in hex) [default: FFFFFF]
+      --logo-bg-color <LOGO_BG_COLOR>
+          The background color of the logo (in hex) [default: FFFFFF] [aliases: lc]
   -h, --help
           Print help
   -V, --version
