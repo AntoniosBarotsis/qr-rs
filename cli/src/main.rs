@@ -68,15 +68,17 @@ async fn qrg(args: Vec<String>) -> Result<(), CliError> {
     (None, None) => Logo::from_str(&args.logo)?.into(),
   };
 
-  // TODO Maybe these should throw an error if they are not valid hex strings for better UX.
-  let bg_color = hex_to_rgb(&args.bg_color);
-  let logo_bg_color = hex_to_rgb(&args.logo_bg_color);
+  let bg_color = hex_to_rgb(&args.bg_color)
+    .ok_or_else(|| CliError::InvalidColor(format!("Failed to parse {}", &args.bg_color)))?;
+
+  let logo_bg_color = hex_to_rgb(&args.logo_bg_color)
+    .ok_or_else(|| CliError::InvalidColor(format!("Failed to parse {}", &args.bg_color)))?;
 
   #[allow(unused_variables)] // Silence warning for cfg(test)
   let qr_code = QrCodeBuilder::new(&args.content, &logo)
     .with_size(args.size)
-    .with_some_bg_color(bg_color)
-    .with_some_logo_bg_color(logo_bg_color)
+    .with_bg_color(bg_color)
+    .with_logo_bg_color(logo_bg_color)
     .build()?;
 
   // Don't save any images when running tests

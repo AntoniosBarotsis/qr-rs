@@ -1,6 +1,6 @@
 use actix_web::{get, web, HttpResponse, Responder};
 use common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
-use qr_rs_lib::{QrCodeBuilder, DEFAULT_SIZE};
+use qr_rs_lib::{QrCodeBuilder, Rgb, DEFAULT_SIZE};
 use serde::Deserialize;
 
 use crate::error::ServerError;
@@ -45,20 +45,8 @@ pub async fn help() -> impl Responder {
 pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, ServerError> {
   let input = content.into_inner();
 
-  // TODO Remove code duplication
-  // TODO Maybe extract this to a method in the common crate so it can be used by the cli
-  let bg_color = input
-    .bg_color
-    .or_else(|| Some(WHITE_HEX.to_owned()))
-    .and_then(|s| hex_to_rgb(&s))
-    .ok_or(ServerError::InvalidColor)?;
-
-  let logo_bg_color = input
-    .logo_bg_color
-    .or_else(|| Some(WHITE_HEX.to_owned()))
-    .and_then(|s| hex_to_rgb(&s))
-    .ok_or(ServerError::InvalidColor)?;
-  // ==================================
+  let bg_color = parse_color(input.bg_color)?;
+  let logo_bg_color = parse_color(input.logo_bg_color)?;
 
   let logo = match input.logo_web_source {
     Some(l) => read_image_bytes_async(&l).await,
@@ -73,6 +61,14 @@ pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, ServerError>
     .build()?;
 
   Ok(HttpResponse::Ok().content_type("image/png").body(qr_code))
+}
+
+/// Uses [`common::parse_color`] to parse the string into an [`Rgb`] value.
+/// Fallbacks to white.
+fn parse_color(c: Option<String>) -> Result<Rgb, ServerError> {
+  c.or_else(|| Some(WHITE_HEX.to_owned()))
+    .and_then(|s| hex_to_rgb(&s))
+    .ok_or(ServerError::InvalidColor)
 }
 
 #[derive(Debug, Deserialize)]
