@@ -12,6 +12,7 @@ license = "GPL-3.0"
 
 [dependencies]
 # TODO Bump this and `png` when https://github.com/erwanvivien/fast_qr/issues/14
+# and https://github.com/RazrFalcon/resvg/issues/571
 fast_qr = { version = "0.7.0", features = ["image"] }
 image = "0.24.5"
 png = "0.17.7"
