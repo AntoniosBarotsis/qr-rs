@@ -1,0 +1,29 @@
+# TODO check that this works
+name: Release `lib` crate
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release
+        required: true
+        type: string
+
+jobs:
+  publish_server:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use cached dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Prepare
+        run: cargo install cargo-release
+
+      - name: Login to Crates.io
+        run: cargo login ${{ secrets.CRATESIO_TOKEN }}
+
+      - name: Publish lib
+        working-directory: ./lib
+        run: cargo release publish --execute --no-confirm
