@@ -27,12 +27,14 @@ pub async fn help() -> impl Responder {
     "       bg_color:        hex       [optional]\n",
     "       logo:            string    [optional]\n",
     "       logo_web_source: string    [optional]\n\n",
+    "       logo_bg_color:   hex       [optional]\n",
     "   Example: /qr?content=https://github.com/AntoniosBarotsis\n\n",
     "   - content:         The text the qr code should contain.\n",
     "   - size:            The size of the QR Code                      [default: 600]\n",
     "   - bg_color:        The background color of the QR Code (in hex) [default: FFFFFF]\n",
     "   - logo:            The name of the logo to use in the overlay.  [default: google]\n",
-    "   - logo_web_source: URL to the logo (must be a valid PNG/JPEG)   [default: None]"
+    "   - logo_web_source: URL to the logo (must be a valid PNG/JPEG)   [default: None]\n",
+    "   - logo_bg_color:   The background color of the logo (in hex)    [default: FFFFFF]\n",
   );
 
   HttpResponse::Ok().body(msg)
@@ -43,11 +45,20 @@ pub async fn help() -> impl Responder {
 pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, ServerError> {
   let input = content.into_inner();
 
+  // TODO Remove code duplication
+  // TODO Maybe extract this to a method in the common crate so it can be used by the cli
   let bg_color = input
     .bg_color
     .or_else(|| Some(WHITE_HEX.to_owned()))
     .and_then(|s| hex_to_rgb(&s))
     .ok_or(ServerError::InvalidColor)?;
+
+  let logo_bg_color = input
+    .logo_bg_color
+    .or_else(|| Some(WHITE_HEX.to_owned()))
+    .and_then(|s| hex_to_rgb(&s))
+    .ok_or(ServerError::InvalidColor)?;
+  // ==================================
 
   let logo = match input.logo_web_source {
     Some(l) => read_image_bytes_async(&l).await,
@@ -58,6 +69,7 @@ pub async fn qr(content: web::Query<Input>) -> Result<HttpResponse, ServerError>
   let qr_code = QrCodeBuilder::new(input.content.as_str(), &logo)
     .with_size(input.size.unwrap_or(DEFAULT_SIZE))
     .with_bg_color(bg_color)
+    .with_logo_bg_color(logo_bg_color)
     .build()?;
 
   Ok(HttpResponse::Ok().content_type("image/png").body(qr_code))
@@ -70,4 +82,5 @@ pub struct Input {
   bg_color: Option<String>,
   logo: Option<String>,
   logo_web_source: Option<String>,
+  logo_bg_color: Option<String>,
 }

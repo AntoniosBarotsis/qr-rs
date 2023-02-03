@@ -24,10 +24,6 @@ pub struct Args {
   #[arg(short, long, default_value_t = DEFAULT_SIZE)]
   size: u32,
 
-  /// The background color of the QR Code (in hex).
-  #[arg(short = 'c', long, default_value_t = ("FFFFFF".to_owned()))]
-  bg_color: String,
-
   /// The name of the logo to use in the overlay.
   #[arg(short, long, default_value_t = ("google".to_owned()))]
   logo: String,
@@ -39,6 +35,14 @@ pub struct Args {
   /// URL to the logo (must be a valid PNG/JPEG).
   #[arg(long, visible_alias("web"))]
   logo_web_source: Option<String>,
+
+  /// The background color of the QR Code (in hex).
+  #[arg(short = 'c', long, default_value_t = ("FFFFFF".to_owned()))]
+  bg_color: String,
+
+  /// The background color of the logo (in hex).
+  #[arg(long, visible_alias("lc"), default_value_t = ("FFFFFF".to_owned()))]
+  logo_bg_color: String,
 }
 
 #[tokio::main]
@@ -64,12 +68,15 @@ async fn qrg(args: Vec<String>) -> Result<(), CliError> {
     (None, None) => Logo::from_str(&args.logo)?.into(),
   };
 
+  // TODO Maybe these should throw an error if they are not valid hex strings for better UX.
   let bg_color = hex_to_rgb(&args.bg_color);
+  let logo_bg_color = hex_to_rgb(&args.logo_bg_color);
 
   #[allow(unused_variables)] // Silence warning for cfg(test)
   let qr_code = QrCodeBuilder::new(&args.content, &logo)
     .with_size(args.size)
     .with_some_bg_color(bg_color)
+    .with_some_logo_bg_color(logo_bg_color)
     .build()?;
 
   // Don't save any images when running tests
@@ -125,6 +132,27 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn generate_destination() {
+    let args = cli_args!("content", "--destination", "res.png");
+    let res = qrg(args).await;
+    assert!(res.is_ok());
+  }
+
+  #[tokio::test]
+  async fn generate_size() {
+    let args = cli_args!("content", "--size", "1000");
+    let res = qrg(args).await;
+    assert!(res.is_ok());
+  }
+
+  #[tokio::test]
+  async fn generate_logo() {
+    let args = cli_args!("content", "--logo", "google");
+    let res = qrg(args).await;
+    assert!(res.is_ok());
+  }
+
+  #[tokio::test]
   async fn generate_path() {
     let args = cli_args!("content", "--path", "../assets/example.png");
     let res = qrg(args).await;
@@ -154,5 +182,42 @@ mod tests {
     let args = cli_args!("content", "--web", "https://github.com/");
     let res = qrg(args).await;
     assert!(res.is_err());
+  }
+
+  #[tokio::test]
+  async fn generate_bg_color() {
+    let args = cli_args!("content", "--bg-color", "FF00FF");
+    let res = qrg(args).await;
+    assert!(res.is_ok());
+  }
+
+  #[tokio::test]
+  async fn generate_logo_bg_color() {
+    let args = cli_args!("content", "--logo-bg-color", "FF00FF");
+    let res = qrg(args).await;
+    assert!(res.is_ok());
+  }
+
+  #[tokio::test]
+  async fn all_params() {
+    let args = cli_args!(
+      "content",
+      "--destination",
+      "res.png",
+      "--size",
+      "1000",
+      "--logo",
+      "google",
+      "--logo-source",
+      "../assets/example.png",
+      "--logo-web-source",
+      "https://github.com/AntoniosBarotsis/qr-rs/raw/master/assets/example.png",
+      "--bg-color",
+      "00FF00",
+      "--logo-bg-color",
+      "FF00FF"
+    );
+    let res = qrg(args).await;
+    assert!(res.is_ok());
   }
 }
