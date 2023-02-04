@@ -1,16 +1,20 @@
-use std::fmt::Display;
-
 use image::ImageError;
+use thiserror::Error;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Error, Debug, PartialEq, Eq)]
 pub enum Error {
   /// Represents invalid parameters (such as a really big size or an empty link).
+  #[error("{0}")]
   InputError(String),
+
   /// Represents an error in the QR Code generation. If this happens there's likely a bug in this
   /// crate.
+  #[error("{0}")]
   QrError(String),
+  
   /// Represents an error in the encoding of the image. If this happens there's likely a bug
   /// in this crate.
+  #[error("{0}")]
   ImageError(String),
 }
 
@@ -36,13 +40,5 @@ impl From<png::EncodingError> for Error {
 impl From<ImageError> for Error {
   fn from(e: ImageError) -> Self {
     Self::ImageError(e.to_string())
-  }
-}
-
-impl Display for Error {
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    match &self {
-      Self::ImageError(e) | Self::QrError(e) | Self::InputError(e) => write!(f, "{e}"),
-    }
   }
 }

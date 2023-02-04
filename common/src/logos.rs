@@ -1,8 +1,10 @@
 use std::str::FromStr;
+use thiserror::Error;
 
 const GOOGLE_LOGO: &[u8] = include_bytes!("../../assets/logo.png");
 
-#[derive(Debug)]
+#[derive(Error, Debug)]
+#[error("Invalid logo {0}. Currently, only the \"Google\" logo is added.")]
 pub struct InvalidLogo(pub String);
 
 #[derive(Debug, Clone, Copy)]
