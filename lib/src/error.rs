@@ -11,7 +11,7 @@ pub enum Error {
   /// crate.
   #[error("{0}")]
   QrError(String),
-  
+
   /// Represents an error in the encoding of the image. If this happens there's likely a bug
   /// in this crate.
   #[error("{0}")]

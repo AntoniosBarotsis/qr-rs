@@ -6,7 +6,7 @@ use thiserror::Error;
 pub enum ServerError {
   #[error("Invalid logo {0}.")]
   InvalidLogo(String),
-  #[error("Invalid color .")]
+  #[error("Invalid color.")]
   InvalidColor,
   #[error("{0}")]
   Lib(Box<qr_rs_lib::error::Error>),
