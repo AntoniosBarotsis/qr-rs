@@ -15,3 +15,4 @@ lib/Cargo.lock
 *.pdb
 
 tmp.png
+out.png
