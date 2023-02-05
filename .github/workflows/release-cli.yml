@@ -1,47 +1,14 @@
-# TODO check that this works
-# CI that:
-#
-# * checks for a Git Tag that looks like a release ("v1.2.0")
-# * creates a Github Release™️
-# * builds binaries/packages with cargo-dist
-# * uploads those packages to the Github Release™️
-#
-# Note that the Github Release™️ will be created before the packages,
-# so there will be a few minutes where the release has no packages
-# and then they will slowly trickle in, possibly failing. To make
-# this more pleasant we mark the release as a "draft" until all
-# artifacts have been successfully uploaded. This allows you to
-# choose what to do with partial successes and avoids spamming
-# anyone with notifications before the release is actually ready.
+# Mostly created by https://github.com/axodotdev/cargo-dist.
 name: Release CLI crate
 
 permissions:
   contents: write
 
-# This task will run whenever you push a git tag that looks like
-# a version number. We just look for `v` followed by at least one number
-# and then whatever. so `v1`, `v1.0.0`, and `v1.0.0-prerelease` all work.
-#
-# If there's a prerelease-style suffix to the version then the Github Release™️
-# will be marked as a prerelease (handled by taiki-e/create-gh-release-action).
-#
-# Note that when generating links to uploaded artifacts, cargo-dist will currently
-# assume that your git tag is always v{VERSION} where VERSION is the version in
-# the published package's Cargo.toml (this is the default behaviour of cargo-release).
-# In the future this may be made more robust/configurable.
-# on:
-#   push:
-#     tags:
-#       - v[0-9]+.*
-# on:
-#   push:
-#     tags:
-#       - v[0-9]+.*
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version to release
+        description: Version to release (should be in the form of `v0.1.0`.)
         required: true
         type: string
 
