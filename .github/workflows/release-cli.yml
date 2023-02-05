@@ -33,10 +33,17 @@ permissions:
 #   push:
 #     tags:
 #       - v[0-9]+.*
+# on:
+#   push:
+#     tags:
+#       - v[0-9]+.*
 on:
-  push:
-    tags:
-      - v[0-9]+.*
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release
+        required: true
+        type: string
 
 env:
   ALL_CARGO_DIST_TARGET_ARGS: --target=x86_64-unknown-linux-gnu --target=x86_64-apple-darwin --target=x86_64-pc-windows-msvc 
@@ -49,7 +56,22 @@ jobs:
     outputs:
       tag: ${{ steps.create-gh-release.outputs.computed-prefix }}${{ steps.create-gh-release.outputs.version }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ inputs.version }}',
+              sha: context.sha
+            })
+
       - id: create-gh-release
         uses: taiki-e/create-gh-release-action@v1
         with:
