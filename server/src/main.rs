@@ -140,7 +140,7 @@ mod tests {
     assert!(body.is_ok());
 
     let body = body.unwrap();
-    assert_eq!(body, "\"Invalid color\"");
+    assert_eq!(body, "\"Invalid color.\"");
   }
 
   #[actix_web::test]
@@ -157,7 +157,7 @@ mod tests {
     assert!(body.is_ok());
 
     let body = body.unwrap();
-    assert_eq!(body, "\"Invalid color\"");
+    assert_eq!(body, "\"Invalid color.\"");
   }
 
   #[actix_web::test]

@@ -3,6 +3,7 @@
 mod error;
 use std::str::FromStr;
 
+use anyhow::Result;
 use clap::Parser;
 use common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
 use error::CliError;
@@ -24,7 +25,7 @@ pub struct Args {
   #[arg(short, long, default_value_t = DEFAULT_SIZE)]
   size: u32,
 
-  /// The name of the logo to use in the overlay.
+  /// The name of the logo to use in the overlay. Currently, only the Google logo can be used.
   #[arg(short, long, default_value_t = ("google".to_owned()))]
   logo: String,
 
@@ -47,13 +48,13 @@ pub struct Args {
 
 #[tokio::main]
 #[cfg(not(tarpaulin_include))]
-async fn main() -> Result<(), CliError> {
+async fn main() -> Result<()> {
   // The command line args are passed here as an iterable
   // instead of parsing them directly to facilitate testing.
   qrg(std::env::args().collect::<Vec<_>>()).await
 }
 
-async fn qrg(args: Vec<String>) -> Result<(), CliError> {
+async fn qrg(args: Vec<String>) -> Result<()> {
   let args = Args::parse_from(args);
 
   // logo_source > logo_web_source > logo
@@ -65,14 +66,16 @@ async fn qrg(args: Vec<String>) -> Result<(), CliError> {
       .await
       .ok_or_else(|| CliError::IoError(format!("Error fetching image from '{l}'")))?,
     // If neither, use logo
-    (None, None) => Logo::from_str(&args.logo)?.into(),
+    (None, None) => Logo::from_str(&args.logo)
+      .map_err(|e| CliError::InvalidLogo(e.to_string()))?
+      .into(),
   };
 
-  let bg_color = hex_to_rgb(&args.bg_color)
-    .ok_or_else(|| CliError::InvalidColor(format!("Failed to parse {}", &args.bg_color)))?;
+  let bg_color =
+    hex_to_rgb(&args.bg_color).ok_or_else(|| CliError::InvalidColor(args.bg_color.clone()))?;
 
-  let logo_bg_color = hex_to_rgb(&args.logo_bg_color)
-    .ok_or_else(|| CliError::InvalidColor(format!("Failed to parse {}", &args.bg_color)))?;
+  let logo_bg_color =
+    hex_to_rgb(&args.logo_bg_color).ok_or_else(|| CliError::InvalidColor(args.bg_color.clone()))?;
 
   #[allow(unused_variables)] // Silence warning for cfg(test)
   let qr_code = QrCodeBuilder::new(&args.content, &logo)
@@ -94,7 +97,7 @@ async fn qrg(args: Vec<String>) -> Result<(), CliError> {
 }
 
 /// Reads the file on the given path and returns its bytes.
-fn read_file(logo_source: &str) -> Result<Vec<u8>, CliError> {
+fn read_file(logo_source: &str) -> Result<Vec<u8>> {
   let bytes = std::fs::read(logo_source)?;
 
   Ok(bytes)
@@ -152,6 +155,13 @@ mod tests {
     let args = cli_args!("content", "--logo", "google");
     let res = qrg(args).await;
     assert!(res.is_ok());
+  }
+
+  #[tokio::test]
+  async fn generate_logo_invalid() {
+    let args = cli_args!("content", "--logo", "invalid");
+    let res = qrg(args).await;
+    assert!(res.is_err());
   }
 
   #[tokio::test]
