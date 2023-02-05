@@ -13,7 +13,7 @@
 # artifacts have been successfully uploaded. This allows you to
 # choose what to do with partial successes and avoids spamming
 # anyone with notifications before the release is actually ready.
-name: Release
+name: Release `CLI` crate
 
 permissions:
   contents: write
