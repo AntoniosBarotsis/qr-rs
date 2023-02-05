@@ -25,3 +25,4 @@ jobs:
         run: |
           docker build -t antoniosbarotsis/qr-rs:${{ inputs.version }} .
           docker push antoniosbarotsis/qr-rs:${{ inputs.version }}
+        working-directory: './server'
