@@ -158,6 +158,13 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn generate_logo_invalid() {
+    let args = cli_args!("content", "--logo", "invalid");
+    let res = qrg(args).await;
+    assert!(res.is_err());
+  }
+
+  #[tokio::test]
   async fn generate_path() {
     let args = cli_args!("content", "--path", "../assets/example.png");
     let res = qrg(args).await;
