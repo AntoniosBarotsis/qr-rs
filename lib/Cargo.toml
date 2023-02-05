@@ -11,11 +11,9 @@ license = "GPL-3.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# TODO Bump this and `png` when https://github.com/erwanvivien/fast_qr/issues/14
-# and https://github.com/RazrFalcon/resvg/issues/571
-fast_qr = { version = "0.7.0", features = ["image"] }
+fast_qr = { version = "0.8.2", features = ["image"] }
 image = "0.24.5"
-png = "0.17.7"
+png = "0.17.6"
 thiserror = "1.0.38"
 
 [dev-dependencies]
