@@ -34,6 +34,7 @@ permissions:
 #     tags:
 #       - v[0-9]+.*
 on:
+  push:
   workflow_dispatch:
     inputs:
       version:
