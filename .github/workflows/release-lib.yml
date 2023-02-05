@@ -1,6 +1,7 @@
 # TODO check that this works
 name: Release lib crate
 on:
+  push:
   workflow_dispatch:
     inputs:
       version:

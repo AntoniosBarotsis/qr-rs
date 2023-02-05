@@ -1,6 +1,7 @@
 # TODO check that this works
 name: Release server crate
 on:
+  push:
   workflow_dispatch:
     inputs:
       version:
