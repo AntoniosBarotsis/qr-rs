@@ -71,6 +71,7 @@ jobs:
 
   # Create the Github Release™️ so the packages have something to be uploaded to
   create-release:
+    needs: create-tag
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.create-gh-release.outputs.computed-prefix }}${{ steps.create-gh-release.outputs.version }}
