@@ -2,11 +2,6 @@
 name: Release lib crate
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: Version to release
-        required: true
-        type: string
 
 jobs:
   publish_lib:
