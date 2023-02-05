@@ -1,5 +1,5 @@
 # TODO check that this works
-name: Release `server` crate
+name: Release server crate
 on:
   workflow_dispatch:
     inputs:

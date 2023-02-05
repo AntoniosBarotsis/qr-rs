@@ -1,5 +1,5 @@
 # TODO check that this works
-name: Release `lib` crate
+name: Release lib crate
 on:
   workflow_dispatch:
     inputs:
