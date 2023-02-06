@@ -87,7 +87,7 @@ pub struct QrCodeBuilder<'a, 'b> {
 
 impl<'a, 'b> QrCodeBuilder<'a, 'b> {
   /// Construct a new QR Code builder given the contents of the QR Code and the logo to use.
-  /// 
+  ///
   /// Everything else is optional.
   pub const fn new(content: &'a str, logo: &'b [u8]) -> QrCodeBuilder<'a, 'b> {
     Self {
@@ -107,7 +107,7 @@ impl<'a, 'b> QrCodeBuilder<'a, 'b> {
 
   /// Sets the background color of the QR Code. The caller is responsible
   /// for ensuring that the end result is readable.
-  /// 
+  ///
   /// Defaults to white.
   pub fn with_bg_color(&mut self, bg_color: Rgb) -> &mut Self {
     self.bg_color = Some(bg_color);
