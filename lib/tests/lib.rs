@@ -44,11 +44,4 @@ fn valid() {
     .build();
 
   assert!(matches!(res, Ok(_)));
-
-  let res = QrCodeBuilder::new(link, LOGO)
-    .with_size(size)
-    .with_some_bg_color(Some(bg_color))
-    .build();
-
-  assert!(matches!(res, Ok(_)));
 }
