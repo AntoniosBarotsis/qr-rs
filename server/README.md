@@ -1,7 +1,7 @@
 # QR-RS Server
 
 [![dependency status](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs/status.svg?path=server)](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs?path=server)
-<!-- [![Docker Image](https://img.shields.io/badge/Docker-Images-0092e6?logo=docker)](https://hub.docker.com/r/antoniosbarotsis/qr-rs) -->
+[![Docker Image](https://img.shields.io/docker/v/antoniosbarotsis/qr-rs)](https://hub.docker.com/r/antoniosbarotsis/qr-rs)
 
 ## Usage
 
@@ -22,10 +22,8 @@ curl http://127.0.0.1:8080/
 You can also run this through Docker with
 
 ```sh
-docker build -t qr-rs -f server/Dockerfile .
+# docker build -t qr-rs -f server/Dockerfile .
+# docker run -p 8080:8080 qr-rs
+docker pull antoniosbarotsis/qr-rs
 docker run -p 8080:8080 qr-rs
 ```
-
-If you are not used to Rust's build times, the first one usually takes some time :)
-
-The logo is currently stored in `../assets/logo.png`.
