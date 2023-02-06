@@ -7,10 +7,11 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4.2.1"
-serde = { version = "1.0.150", features = ["derive"] }
-qr-rs-lib = { path = "../lib" }
-common = { path = "../common" }
 thiserror = "1.0.38"
+serde = { version = "1.0.150", features = ["derive"] }
+
+common = { version = "0.1.0-rc1", path = "../common" }
+qr-rs-lib = { version = "0.1.0-rc1", path = "../lib" }
 
 [dev-dependencies]
 pretty_assertions = "1.3.0"
