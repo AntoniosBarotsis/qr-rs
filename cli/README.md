@@ -2,6 +2,10 @@
 
 > QR Generate!
 
+For more information on the project, take a look at the
+[README](https://github.com/AntoniosBarotsis/qr-rs#readme) and
+[this website](https://antoniosbarotsis.github.io/qr-rs/).
+
 ## Installation
 
 > **Note** Make sure you have 

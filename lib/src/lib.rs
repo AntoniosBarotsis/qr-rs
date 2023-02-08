@@ -8,7 +8,8 @@
 //! This crate exposes the [`QrCodeBuilder`] struct which generates the QR Codes.
 //!
 //! A usage example in the form of an [Actix](actix.rs) web-server can be found
-//! [here](https://github.com/AntoniosBarotsis/qr-rs/tree/master/server).
+//! [here](https://github.com/AntoniosBarotsis/qr-rs/tree/master/server) and a CLI example can be
+//! found [here](https://github.com/AntoniosBarotsis/qr-rs/tree/master/cli).
 
 pub mod error;
 
@@ -31,7 +32,7 @@ const BLACK: [u8; 4] = [0, 0, 0, 255];
 const WHITE: [u8; 4] = [255, 255, 255, 255];
 const TRANSPARENT: [u8; 4] = [255, 255, 255, 0];
 
-/// Wrapper around [Rgba] but without the `a` value.
+/// Wrapper around [Rgba] but without the `a` value for convenience.
 #[derive(Debug, Clone, Copy)]
 pub struct Rgb(pub [u8; 3]);
 
@@ -85,6 +86,9 @@ pub struct QrCodeBuilder<'a, 'b> {
 }
 
 impl<'a, 'b> QrCodeBuilder<'a, 'b> {
+  /// Construct a new QR Code builder given the contents of the QR Code and the logo to use.
+  ///
+  /// Everything else is optional.
   pub const fn new(content: &'a str, logo: &'b [u8]) -> QrCodeBuilder<'a, 'b> {
     Self {
       content,
@@ -95,8 +99,7 @@ impl<'a, 'b> QrCodeBuilder<'a, 'b> {
     }
   }
 
-  /// The QR Codes are always square so `size` is used for both the
-  /// height and width.
+  /// Sets the dimensions of the QR Code to `size x size`.
   pub fn with_size(&mut self, size: u32) -> &mut Self {
     self.size = Some(size);
     self
@@ -104,19 +107,15 @@ impl<'a, 'b> QrCodeBuilder<'a, 'b> {
 
   /// Sets the background color of the QR Code. The caller is responsible
   /// for ensuring that the end result is readable.
+  ///
+  /// Defaults to white.
   pub fn with_bg_color(&mut self, bg_color: Rgb) -> &mut Self {
     self.bg_color = Some(bg_color);
     self
   }
 
-  /// Similar to [`QrCodeBuilder::with_bg_color`] but takes an option instead
-  /// for convenience.
-  pub fn with_some_bg_color(&mut self, bg_color: Option<Rgb>) -> &mut Self {
-    self.bg_color = bg_color;
-    self
-  }
-
-  /// Sets the background color of the padding around the logo.
+  /// Sets the background color of the padding around the logo. The caller is responsible
+  /// for ensuring that the end result is readable.
   ///
   /// Defaults to white.
   pub fn with_logo_bg_color(&mut self, logo_bg_color: Rgb) -> &mut Self {
@@ -124,13 +123,9 @@ impl<'a, 'b> QrCodeBuilder<'a, 'b> {
     self
   }
 
-  /// Similar to [`QrCodeBuilder::with_logo_bg_color`] but takes an option instead
-  /// for convenience.
-  pub fn with_some_logo_bg_color(&mut self, logo_bg_color: Option<Rgb>) -> &mut Self {
-    self.logo_bg_color = logo_bg_color;
-    self
-  }
-
+  /// Constructs the QR Code.
+  ///
+  /// The argument requirements are applied here, hence the [`Result`] return type.
   pub fn build(&self) -> Result<Vec<u8>, Error> {
     let content = self.content;
     let size = self.size.unwrap_or(DEFAULT_SIZE);
