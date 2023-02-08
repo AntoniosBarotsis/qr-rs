@@ -6,6 +6,7 @@ description = "Some utility functions for the qr-rs project."
 license = "GPL-3.0"
 repository = "https://github.com/AntoniosBarotsis/qr-rs"
 readme = "README.md"
+include = ["src", "logo.png"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
