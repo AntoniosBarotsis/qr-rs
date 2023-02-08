@@ -1,5 +1,9 @@
 # QRG CLI
 
+[![dependency status](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs/status.svg?path=cli)](https://deps.rs/repo/github/AntoniosBarotsis/qr-rs?path=cli)
+[![Crates.io](https://img.shields.io/crates/v/qrg)](https://crates.io/crates/qrg)
+[![docs.rs](https://img.shields.io/docsrs/qrg)](https://docs.rs/qrg)
+
 > QR Generate!
 
 For more information on the project, take a look at the
@@ -14,7 +18,10 @@ For more information on the project, take a look at the
 Currently, as the crate is not published, you can only install it from source with
 
 ```sh
-cargo install --path cli
+# From source
+# cargo install --path cli
+
+cargo install qrg
 ```
 
 ## Usage
