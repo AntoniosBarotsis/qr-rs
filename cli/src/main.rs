@@ -5,7 +5,7 @@ use std::str::FromStr;
 
 use anyhow::Result;
 use clap::Parser;
-use common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
+use qr_rs_common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
 use error::CliError;
 use qr_rs_lib::{QrCodeBuilder, DEFAULT_SIZE};
 

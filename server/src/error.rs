@@ -1,5 +1,5 @@
 use actix_web::{http::StatusCode, HttpResponse, ResponseError};
-use common::logos::InvalidLogo;
+use qr_rs_common::logos::InvalidLogo;
 use thiserror::Error;
 
 #[derive(Error, Debug)]

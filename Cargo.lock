@@ -463,15 +463,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d7b894f5411737b7867f4827955924d7c254fc9f4d91a6aad6b097804b1018b"
 
 [[package]]
-name = "common"
-version = "0.1.0-rc1"
-dependencies = [
- "qr-rs-lib",
- "reqwest",
- "thiserror",
-]
-
-[[package]]
 name = "convert_case"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1609,10 +1600,19 @@ name = "qr-rs"
 version = "0.1.0-rc1"
 dependencies = [
  "actix-web",
- "common",
  "pretty_assertions",
+ "qr-rs-common",
  "qr-rs-lib",
  "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "qr-rs-common"
+version = "0.1.0-rc1"
+dependencies = [
+ "qr-rs-lib",
+ "reqwest",
  "thiserror",
 ]
 
@@ -1635,8 +1635,8 @@ version = "0.1.0-rc1"
 dependencies = [
  "anyhow",
  "clap 4.1.1",
- "common",
  "pretty_assertions",
+ "qr-rs-common",
  "qr-rs-lib",
  "thiserror",
  "tokio",

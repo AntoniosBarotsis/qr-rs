@@ -10,7 +10,7 @@ actix-web = "4.2.1"
 thiserror = "1.0.38"
 serde = { version = "1.0.150", features = ["derive"] }
 
-common = { version = "0.1.0-rc1", path = "../common" }
+qr-rs-common = { version = "0.1.0-rc1", path = "../common" }
 qr-rs-lib = { version = "0.1.0-rc1", path = "../lib" }
 
 [dev-dependencies]

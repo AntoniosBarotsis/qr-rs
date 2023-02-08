@@ -1,5 +1,5 @@
 use actix_web::{get, web, HttpResponse, Responder};
-use common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
+use qr_rs_common::{hex_to_rgb, logos::Logo, read_image_bytes_async};
 use qr_rs_lib::{QrCodeBuilder, Rgb, DEFAULT_SIZE};
 use serde::Deserialize;
 
