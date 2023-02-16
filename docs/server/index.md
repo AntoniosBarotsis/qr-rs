@@ -22,5 +22,5 @@ You can also run this through Docker with
 # docker build -t qr-rs -f server/Dockerfile .
 # docker run -p 8080:8080 qr-rs
 docker pull antoniosbarotsis/qr-rs
-docker run -p 8080:8080 qr-rs
+docker run -p 8080:8080 antoniosbarotsis/qr-rs
 ```
