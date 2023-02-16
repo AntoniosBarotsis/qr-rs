@@ -12,6 +12,9 @@ cargo install qrg
 
 This also works for updating it (make sure you pull first!)
 
+Alternatively, you can download pre-built binaries from
+[GitHub Releases](https://github.com/AntoniosBarotsis/qr-rs/releases).
+
 ## Usage
 
 You can get the list of available commands as follows:
