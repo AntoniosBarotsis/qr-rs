@@ -16,6 +16,8 @@ jobs:
 
       - name: Check semver
         uses: obi1kenobi/cargo-semver-checks-action@v1
+        with:
+          crate-name: qr-rs-lib
 
       - name: Prepare
         run: cargo install cargo-release
