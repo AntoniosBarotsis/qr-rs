@@ -22,6 +22,5 @@ jobs:
 
       - name: Docker - x86
         run: |
-          docker build -t antoniosbarotsis/qr-rs:${{ inputs.version }} -t antoniosbarotsis/qr-rs:latest -f server/Dockerfile .
+          docker build -t antoniosbarotsis/qr-rs:${{ inputs.version }} -f server/Dockerfile .
           docker push antoniosbarotsis/qr-rs:${{ inputs.version }}
-          docker push antoniosbarotsis/qr-rs:latest
