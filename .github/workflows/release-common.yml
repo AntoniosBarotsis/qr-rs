@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish_lib:
+  publish_common:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
