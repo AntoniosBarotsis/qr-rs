@@ -15,9 +15,10 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Check semver
-        uses: obi1kenobi/cargo-semver-checks-action@v1
-        with:
-          crate-name: qr-rs-lib
+        working-directory: lib
+        run: |
+          cargo install cargo-semver-checks --locked
+          cargo semver-checks check-release
 
       - name: Prepare
         run: cargo install cargo-release
