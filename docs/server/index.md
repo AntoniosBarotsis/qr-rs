@@ -21,6 +21,8 @@ You can also run this through Docker with
 ```sh
 # docker build -t qr-rs -f server/Dockerfile .
 # docker run -p 8080:8080 qr-rs
-docker pull antoniosbarotsis/qr-rs
-docker run -p 8080:8080 qr-rs
+docker pull antoniosbarotsis/qr-rs:tagname
+docker run -p 8080:8080 antoniosbarotsis/qr-rs:tagname
 ```
+
+You can see the `tagnames` [here](https://hub.docker.com/r/antoniosbarotsis/qr-rs/tags).

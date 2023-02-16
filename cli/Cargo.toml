@@ -1,6 +1,6 @@
 [package]
 name = "qrg"
-version = "0.1.0-rc1"
+version = "0.1.0"
 edition = "2021"
 description = "Generates QRCodes with a logo overlay."
 keywords = ["qr-code", "qrcode"]
@@ -16,8 +16,8 @@ thiserror = "1.0.38"
 clap = { version = "4.1.1", features = ["derive"] }
 tokio = { version = "1.24.1", features = ["rt-multi-thread", "macros"] }
 
-qr-rs-common = { version = "0.1.0-rc1", path = "../common" }
-qr-rs-lib = { version = "0.1.0-rc1", path = "../lib" }
+qr-rs-common = { version = "0.1.0", path = "../common" }
+qr-rs-lib = { version = "0.1.0", path = "../lib" }
 
 [dev-dependencies]
 pretty_assertions = "1.3.0"
