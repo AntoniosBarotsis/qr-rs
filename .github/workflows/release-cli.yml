@@ -106,4 +106,4 @@ jobs:
 
       - name: Publish CLI
         working-directory: ./cli
-        run: cargo release publish --execute --no-confirm
+        run: cargo release publish --execute --no-confirm --allow-branch *
