@@ -36,8 +36,13 @@ jobs:
         with:
           targets: ${{ matrix.job.target }}
 
-      - name: Get version
+      - name: Get version (non-windows)
+        if: ${{ matrix.job.os != 'windows-2022' }}
         run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+      - name: Get version (windows)
+        if: ${{ matrix.job.os == 'windows-2022' }}
+        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $env:GITHUB_ENV
 
       - name: Build ${{ matrix.job.target }}
         run: |
