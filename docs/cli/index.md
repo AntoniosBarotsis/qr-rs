@@ -10,8 +10,6 @@
 cargo install qrg
 ```
 
-This also works for updating it (make sure you pull first!)
-
 Alternatively, you can download pre-built binaries from
 [GitHub Releases](https://github.com/AntoniosBarotsis/qr-rs/releases).
 
@@ -34,7 +32,7 @@ Options:
   -s, --size <SIZE>
           The size of the QR Code [default: 600]
   -l, --logo <LOGO>
-          The name of the logo to use in the overlay [default: google]
+          The name of the logo to use in the overlay. Currently, only the Google logo can be used [default: google]
       --logo-source <LOGO_SOURCE>
           Path to the logo (must be a valid PNG/JPEG) [aliases: path]
       --logo-web-source <LOGO_WEB_SOURCE>
@@ -49,7 +47,7 @@ Options:
           Print version
 ```
 
-I will try to keep this outdated but you should run it for yourself just in case some command
+I will try to keep this updated but you should run it for yourself just in case some command
 detail has changed.
 
 ### Example Usage

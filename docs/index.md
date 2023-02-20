@@ -44,14 +44,9 @@ The `common` crate contains very little code and there's no reason to publish it
 
 ## Deployment
 
-As of writing this, no deployments have yet taken place. 
-
-The idea currently is to publish the `server` crate on Dockerhub, the `cli` and `lib` crates on
-`crates.io`. The `cli` will also be "published" as a downloadable executable in Github Releases.
-
-The groundwork has been done for all of the above (although not yet tested) in the form of 3
-separate workflows to allow for different versions of the different crates to be possible (instead
-of re-releasing everything for one minor change in one of the crates).
+The `lib`, `common` and `cli` are now published automatically to [`crates.io`](https://crates.io).
+The `server` is published to [DockerHub](https://hub.docker.com/). Binaries are generated for the
+`cli` in [Github Releases](https://github.com/AntoniosBarotsis/qr-rs/releases).
 
 Publishing the `cli` on more commonly used package managers
 [has been suggested](https://github.com/AntoniosBarotsis/qr-rs/issues/11) but will likely not be
