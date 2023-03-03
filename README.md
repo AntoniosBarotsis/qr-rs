@@ -2,7 +2,7 @@
 
 [![Build & Tests](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/AntoniosBarotsis/qr-rs/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/github/AntoniosBarotsis/qr-rs/branch/master/graph/badge.svg?token=T7OWF8OHDR)](https://codecov.io/github/AntoniosBarotsis/qr-rs)
-[![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
+[![Actively Maintained](https://img.shields.io/badge/Maintenance%20Level-Actively%20Maintained-brightgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
 
 A simple server and CLI that generates QR Codes and overlays a logo on top of them.
 
@@ -61,7 +61,7 @@ at most 150 characters long.
 
 I created a benchmark using [`criterion.rs`](https://github.com/bheisler/criterion.rs) where I
 create 100 strings of 150 characters and test how quick the QR Code generation is. It takes around
-33.5ms (at the time of writing this) on my machine which is pretty good for my use case.
+30ms (at the time of writing this) on my machine which is pretty good for my use case.
 
 <p align="center">
   <img src="assets/plot.svg" alt="Benchmark" width="600">

@@ -1,6 +1,6 @@
 [package]
 name = "qrg"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Generates QRCodes with a logo overlay."
 keywords = ["qr-code", "qrcode"]
@@ -14,7 +14,7 @@ license = "GPL-3.0"
 anyhow = "1.0.68"
 thiserror = "1.0.38"
 clap = { version = "4.1.1", features = ["derive"] }
-tokio = { version = "1.24.1", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1.24.2", features = ["rt-multi-thread", "macros"] }
 
 qr-rs-common = { version = "0.1.0", path = "../common" }
 qr-rs-lib = { version = "0.1.0", path = "../lib" }
