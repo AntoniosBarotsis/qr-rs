@@ -1,6 +1,6 @@
 [package]
 name = "qrg"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Generates QRCodes with a logo overlay."
 keywords = ["qr-code", "qrcode"]
