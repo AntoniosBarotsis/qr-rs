@@ -61,7 +61,7 @@ at most 150 characters long.
 
 I created a benchmark using [`criterion.rs`](https://github.com/bheisler/criterion.rs) where I
 create 100 strings of 150 characters and test how quick the QR Code generation is. It takes around
-33.5ms (at the time of writing this) on my machine which is pretty good for my use case.
+30ms (at the time of writing this) on my machine which is pretty good for my use case.
 
 <p align="center">
   <img src="assets/plot.svg" alt="Benchmark" width="600">
