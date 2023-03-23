@@ -9,4 +9,4 @@ A thin wrapper around [`fast-qr`](https://github.com/erwanvivien/fast_qr).
 
 For more information on the project, take a look at the
 [README](https://github.com/AntoniosBarotsis/qr-rs#readme) and
-[this website](https://antoniosbarotsis.github.io/qr-rs/).
+[the docs](https://docs.rs/qr-rs-lib/latest/qr_rs_lib/).

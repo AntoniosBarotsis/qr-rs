@@ -1,6 +1,9 @@
-FROM rust:1.64-alpine as builder
+FROM rust:1.68-alpine as builder
 
 RUN apk add --no-cache musl-dev libressl-dev
+
+ENV CARGO_INCREMENTAL=0
+ARG CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 
 WORKDIR /qr-rs
 ADD ./server ./server
